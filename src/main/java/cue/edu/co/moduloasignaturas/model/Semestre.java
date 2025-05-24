@@ -9,6 +9,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.NotBlank;
@@ -29,6 +31,8 @@ import java.util.ArrayList;
 @Builder
 @Document(collection = "semestres")
 public class Semestre implements ComponentePlan {
+
+    private static final Logger logger = LoggerFactory.getLogger(Semestre.class);
 
     @Id
     private String id;
@@ -98,9 +102,9 @@ public class Semestre implements ComponentePlan {
     // Métodos del patrón Composite
     @Override
     public void mostrarDetalles() {
-        System.out.println("Semestre " + numero + ": " + nombre);
-        System.out.println("Créditos totales: " + calcularCreditos());
-        System.out.println("Asignaturas:");
+        logger.info("Semestre {}: {}", numero, nombre);
+        logger.info("Créditos totales: {}", calcularCreditos());
+        logger.info("Asignaturas:");
         if (asignaturas != null) {
             asignaturas.forEach(ComponentePlan::mostrarDetalles);
         }

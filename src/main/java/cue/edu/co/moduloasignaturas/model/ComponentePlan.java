@@ -1,8 +1,8 @@
 package cue.edu.co.moduloasignaturas.model;
 
 /**
- * Interfaz para el patrón Composite
- * Permite tratar de manera uniforme PlanEstudios, Semestre y Asignatura
+ * Interfaz ComponentePlan para implementar el patrón Composite
+ * Permite tratar uniformemente a Semestres y Asignaturas
  */
 public interface ComponentePlan {
 
@@ -12,14 +12,16 @@ public interface ComponentePlan {
     void mostrarDetalles();
 
     /**
-     * Calcula los créditos totales del componente
-     * @return número total de créditos
+     * Calcula el total de créditos del componente
+     * @return número de créditos
      */
     int calcularCreditos();
 
     /**
-     * Agrega un componente hijo (solo para composites)
+     * Agrega un componente hijo (para implementaciones que lo soporten)
      * @param componente el componente a agregar
      */
-    void agregarComponente(ComponentePlan componente);
+    default void agregarComponente(ComponentePlan componente) {
+        throw new UnsupportedOperationException("Esta operación no está soportada");
+    }
 }

@@ -1,0 +1,45 @@
+# Configuración para tests - src/test/resources/application-test.yml
+spring:
+  profiles:
+    active: test
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: test_pensum_db
+
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+# Logging para tests
+logging:
+  level:
+    cue.edu.co.modulosasignaturas: DEBUG
+    org.springframework.data.mongodb: INFO
+    org.springframework.test: INFO
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# Configuraciones de validación para tests
+pensum:
+  validation:
+    creditos:
+      min: 1
+      max: 10
+    codigo:
+      min-length: 3
+      max-length: 10
+    horas-por-credito: 16
+  semestre:
+    creditos:
+      min: 12
+      max: 20
+  plan-estudios:
+    duracion:
+      min: 8
+      max: 12
+    creditos-totales:
+      max: 200
