@@ -1,4 +1,4 @@
-package cue.edu.co.modulosasignaturas.controller;
+package cue.edu.co.moduloasignaturas.controller;
 
 import cue.edu.co.moduloasignaturas.model.Asignatura;
 import cue.edu.co.moduloasignaturas.service.AsignaturaService;

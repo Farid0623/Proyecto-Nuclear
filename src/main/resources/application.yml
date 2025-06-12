@@ -1,14 +1,20 @@
 # Configuración de MongoDB
-spring.data.mongodb.host=localhost
-spring.data.mongodb.port=27017
-spring.data.mongodb.database=modulo_asignaturas
-  
-  # Configuración de logging
-logging.level.cue.edu.co=DEBUG
-logging.level.org.springframework.data.mongodb=DEBUG
-  
-  # Configuración del servidor
-server.port=8080
-  
-  # Configuración de validación
-spring.validation.enabled=true
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: modulo_asignaturas
+
+  validation:
+    enabled: true
+
+# Configuración de logging
+logging:
+  level:
+    cue.edu.co: DEBUG
+    org.springframework.data.mongodb: DEBUG
+
+# Configuración del servidor
+server:
+  port: 8080
