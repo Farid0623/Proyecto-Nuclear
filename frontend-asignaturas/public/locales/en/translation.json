@@ -1,0 +1,364 @@
+{
+  "common": {
+    "actions": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "create": "Create",
+      "search": "Search",
+      "filter": "Filter",
+      "clear": "Clear",
+      "back": "Back",
+      "next": "Next",
+      "previous": "Previous",
+      "submit": "Submit",
+      "close": "Close",
+      "view": "View",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "export": "Export",
+      "import": "Import",
+      "refresh": "Refresh",
+      "add": "Add",
+      "remove": "Remove",
+      "select": "Select",
+      "confirm": "Confirm",
+      "changeLanguage": "Change language"
+    },
+    "labels": {
+      "code": "Code",
+      "name": "Name",
+      "description": "Description",
+      "credits": "Credits",
+      "theoreticalHours": "Theoretical Hours",
+      "practicalHours": "Practical Hours",
+      "totalHours": "Total Hours",
+      "active": "Active",
+      "inactive": "Inactive",
+      "status": "Status",
+      "semester": "Semester",
+      "prerequisites": "Prerequisites",
+      "corequisites": "Corequisites",
+      "schedule": "Schedule",
+      "day": "Day",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "classroom": "Classroom",
+      "classType": "Class Type",
+      "professor": "Professor",
+      "students": "Students",
+      "capacity": "Capacity",
+      "program": "Program",
+      "faculty": "Faculty",
+      "year": "Year",
+      "period": "Period",
+      "duration": "Duration"
+    },
+    "messages": {
+      "loading": "Loading...",
+      "success": "Operation successful",
+      "error": "An error occurred",
+      "confirmDelete": "Are you sure you want to delete this item?",
+      "noData": "No data available",
+      "saved": "Saved successfully",
+      "deleted": "Deleted successfully",
+      "updated": "Updated successfully",
+      "created": "Created successfully",
+      "notFound": "Not found",
+      "unauthorized": "Unauthorized",
+      "forbidden": "Access forbidden",
+      "connectionError": "Connection error",
+      "validationError": "Validation error",
+      "serverError": "Server error",
+      "tryAgain": "Try again",
+      "sessionExpired": "Session expired"
+    },
+    "validation": {
+      "required": "This field is required",
+      "minLength": "Minimum {{count}} characters",
+      "maxLength": "Maximum {{count}} characters",
+      "min": "Minimum value {{count}}",
+      "max": "Maximum value {{count}}",
+      "positive": "Must be a positive number",
+      "negative": "Must be a negative number",
+      "email": "Invalid email format",
+      "phone": "Invalid phone format",
+      "url": "Invalid URL format",
+      "invalid": "Invalid format",
+      "hoursConsistency": "Theoretical + practical hours must equal credits × 16",
+      "unique": "This value already exists",
+      "numeric": "Must be a number",
+      "alphanumeric": "Only alphanumeric characters allowed"
+    },
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "logout": "Sign out",
+    "language": "Language"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "subjects": "Subjects",
+    "curriculum": "Curriculum",
+    "schedules": "Schedules",
+    "students": "Students",
+    "professors": "Professors",
+    "classrooms": "Classrooms",
+    "reports": "Reports",
+    "settings": "Settings",
+    "help": "Help",
+    "about": "About"
+  },
+  "subjects": {
+    "title": "Subject Management",
+    "subtitle": "Manage curriculum subjects",
+    "createSubject": "Create Subject",
+    "editSubject": "Edit Subject",
+    "subjectDetails": "Subject Details",
+    "listTitle": "Subject List",
+    "searchPlaceholder": "Search subjects...",
+    "filters": {
+      "all": "All",
+      "active": "Active",
+      "inactive": "Inactive",
+      "bySemester": "By Semester",
+      "byCredits": "By Credits",
+      "byProgram": "By Program",
+      "byFaculty": "By Faculty"
+    },
+    "form": {
+      "basicInfo": "Basic Information",
+      "academicInfo": "Academic Information",
+      "scheduleInfo": "Schedule Information",
+      "requirements": "Requirements",
+      "codeHelp": "Unique code of 3-10 alphanumeric characters",
+      "creditsHelp": "Number of academic credits (1-10)",
+      "hoursHelp": "Total hours must equal credits × 16",
+      "prerequisitesHelp": "Subjects that must be completed previously",
+      "corequisitesHelp": "Subjects that must be taken simultaneously"
+    },
+    "validation": {
+      "codeExists": "A subject with this code already exists",
+      "invalidCode": "Code must be 3-10 alphanumeric characters",
+      "invalidCredits": "Credits must be between 1 and 10",
+      "hoursInconsistent": "Hours are inconsistent with credits",
+      "nameRequired": "Subject name is required",
+      "descriptionTooLong": "Description cannot exceed 500 characters"
+    },
+    "stats": {
+      "total": "Total Subjects",
+      "active": "Active Subjects",
+      "inactive": "Inactive Subjects",
+      "avgCredits": "Average Credits",
+      "totalCredits": "Total Credits",
+      "byFaculty": "By Faculty",
+      "byProgram": "By Program"
+    },
+    "actions": {
+      "activate": "Activate subject",
+      "deactivate": "Deactivate subject",
+      "duplicate": "Duplicate subject",
+      "assignProfessor": "Assign professor",
+      "manageSchedule": "Manage schedule",
+      "viewStudents": "View students"
+    }
+  },
+  "curriculum": {
+    "title": "Curriculum Management",
+    "subtitle": "Organize subjects by semesters",
+    "studyPlan": "Study Plan",
+    "semester": "Semester {{number}}",
+    "totalCredits": "Total Credits",
+    "semesterCredits": "Semester Credits",
+    "dragSubject": "Drag subject here",
+    "addSubjectToSemester": "Add Subject to Semester",
+    "removeFromSemester": "Remove from Semester",
+    "prerequisites": "Prerequisites",
+    "corequisites": "Corequisites",
+    "electiveCredits": "Elective Credits",
+    "coreCredits": "Core Credits",
+    "validation": {
+      "semesterCredits": "Semester must have between 12 and 20 credits",
+      "totalCredits": "Plan cannot exceed 200 total credits",
+      "prerequisiteOrder": "Prerequisites must be in previous semesters",
+      "minimumCredits": "Plan must have at least 140 credits",
+      "maxSemesters": "Plan cannot exceed 12 semesters",
+      "duplicateSubject": "Subject is already in the curriculum"
+    },
+    "actions": {
+      "createPlan": "Create Study Plan",
+      "editPlan": "Edit Plan",
+      "validatePlan": "Validate Plan",
+      "exportPlan": "Export Plan",
+      "importPlan": "Import Plan",
+      "clonePlan": "Clone Plan"
+    },
+    "info": {
+      "totalDuration": "Total Duration",
+      "graduationRequirements": "Graduation Requirements",
+      "electiveOptions": "Elective Options",
+      "specializations": "Specializations"
+    }
+  },
+  "schedules": {
+    "title": "Schedule Management",
+    "subtitle": "Configure subject schedules",
+    "weeklySchedule": "Weekly Schedule",
+    "createSchedule": "Create Schedule",
+    "editSchedule": "Edit Schedule",
+    "scheduleDetails": "Schedule Details",
+    "timeBlock": "Time Block",
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "daysShort": {
+      "monday": "M",
+      "tuesday": "T",
+      "wednesday": "W",
+      "thursday": "T",
+      "friday": "F",
+      "saturday": "S",
+      "sunday": "S"
+    },
+    "classTypes": {
+      "theoretical": "Theoretical",
+      "practical": "Practical",
+      "laboratory": "Laboratory",
+      "seminar": "Seminar",
+      "workshop": "Workshop",
+      "field": "Field"
+    },
+    "validation": {
+      "timeConflict": "There is a schedule conflict with another subject",
+      "invalidTime": "End time must be after start time",
+      "duplicateSchedule": "A schedule already exists for this subject at this time",
+      "classroomOccupied": "Classroom is occupied at this time",
+      "professorConflict": "Professor has a schedule conflict",
+      "minimumDuration": "Class must last at least 1 hour",
+      "maximumDuration": "Class cannot last more than 4 hours"
+    },
+    "filters": {
+      "byDay": "By Day",
+      "byClassroom": "By Classroom",
+      "byProfessor": "By Professor",
+      "bySubject": "By Subject",
+      "byProgram": "By Program",
+      "byTimeBlock": "By Time Block"
+    },
+    "actions": {
+      "assignClassroom": "Assign Classroom",
+      "changeTime": "Change Schedule",
+      "cancelClass": "Cancel Class",
+      "reschedule": "Reschedule",
+      "viewConflicts": "View Conflicts"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard - Subject Management System",
+    "welcome": "Welcome to the System",
+    "overview": "General Overview",
+    "quickActions": "Quick Actions",
+    "recentActivity": "Recent Activity",
+    "upcomingEvents": "Upcoming Events",
+    "systemStatus": "System Status",
+    "stats": {
+      "subjects": "Subjects",
+      "semesters": "Semesters",
+      "schedules": "Schedules",
+      "students": "Students",
+      "professors": "Professors",
+      "classrooms": "Classrooms",
+      "programs": "Programs",
+      "faculties": "Faculties"
+    },
+    "metrics": {
+      "activeSubjects": "Active Subjects",
+      "scheduledClasses": "Scheduled Classes",
+      "enrolledStudents": "Enrolled Students",
+      "utilizationRate": "Utilization Rate",
+      "averageCredits": "Average Credits",
+      "completionRate": "Completion Rate"
+    },
+    "charts": {
+      "subjectsByFaculty": "Subjects by Faculty",
+      "enrollmentTrends": "Enrollment Trends",
+      "classroomUtilization": "Classroom Utilization",
+      "creditDistribution": "Credit Distribution"
+    }
+  },
+  "reports": {
+    "title": "Reports and Analysis",
+    "subtitle": "Generate academic system reports",
+    "types": {
+      "academic": "Academic Reports",
+      "administrative": "Administrative Reports",
+      "statistical": "Statistical Reports",
+      "custom": "Custom Reports"
+    },
+    "formats": {
+      "pdf": "PDF",
+      "excel": "Excel",
+      "csv": "CSV",
+      "json": "JSON"
+    },
+    "filters": {
+      "dateRange": "Date Range",
+      "program": "Program",
+      "faculty": "Faculty",
+      "semester": "Semester",
+      "year": "Year"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Customize system settings",
+    "sections": {
+      "profile": "User Profile",
+      "application": "Application Settings",
+      "system": "System Settings",
+      "security": "Security",
+      "notifications": "Notifications"
+    },
+    "profile": {
+      "personalInfo": "Personal Information",
+      "changePassword": "Change Password",
+      "preferences": "Preferences"
+    },
+    "application": {
+      "language": "Language",
+      "theme": "Theme",
+      "itemsPerPage": "Items per Page",
+      "autoSave": "Auto Save",
+      "dateFormat": "Date Format",
+      "timeFormat": "Time Format"
+    }
+  },
+  "errors": {
+    "404": {
+      "title": "Page not found",
+      "message": "The page you're looking for doesn't exist",
+      "action": "Go to home"
+    },
+    "500": {
+      "title": "Server error",
+      "message": "An internal error occurred",
+      "action": "Report issue"
+    },
+    "403": {
+      "title": "Access denied",
+      "message": "You don't have permission to access this page",
+      "action": "Contact administrator"
+    },
+    "network": {
+      "title": "Connection error",
+      "message": "Check your internet connection",
+      "action": "Retry"
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "name": "modulo-asignaturas-frontend",
+  "version": "1.0.0",
+  "description": "Frontend para el módulo de asignaturas y pensum - Universidad Alexander Von Humboldt",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.1",
+    "react-scripts": "5.0.1",
+    "react-query": "^3.39.3",
+    "axios": "^1.3.4",
+    "i18next": "^22.4.11",
+    "react-i18next": "^12.1.5",
+    "i18next-browser-languagedetector": "^7.0.1",
+    "react-hook-form": "^7.43.3",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
+    "react-hot-toast": "^2.4.0",
+    "lucide-react": "^0.315.0",
+    "date-fns": "^2.29.3",
+    "clsx": "^1.2.1",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.2.7",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.21",
+    "@tailwindcss/forms": "^0.5.3",
+    "@tailwindcss/typography": "^0.5.9",
+    "eslint": "^8.36.0",
+    "eslint-plugin-react": "^7.32.2",
+    "prettier": "^2.8.7",
+    "prettier-plugin-tailwindcss": "^0.2.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext .js,.jsx",
+    "lint:fix": "eslint src --ext .js,.jsx --fix",
+    "format": "prettier --write src/**/*.{js,jsx,css,md}"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

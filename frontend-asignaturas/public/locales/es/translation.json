@@ -1,0 +1,364 @@
+{
+  "common": {
+    "actions": {
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "create": "Crear",
+      "search": "Buscar",
+      "filter": "Filtrar",
+      "clear": "Limpiar",
+      "back": "Volver",
+      "next": "Siguiente",
+      "previous": "Anterior",
+      "submit": "Enviar",
+      "close": "Cerrar",
+      "view": "Ver",
+      "activate": "Activar",
+      "deactivate": "Desactivar",
+      "export": "Exportar",
+      "import": "Importar",
+      "refresh": "Actualizar",
+      "add": "Agregar",
+      "remove": "Remover",
+      "select": "Seleccionar",
+      "confirm": "Confirmar",
+      "changeLanguage": "Cambiar idioma"
+    },
+    "labels": {
+      "code": "Código",
+      "name": "Nombre",
+      "description": "Descripción",
+      "credits": "Créditos",
+      "theoreticalHours": "Horas Teóricas",
+      "practicalHours": "Horas Prácticas",
+      "totalHours": "Horas Totales",
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "status": "Estado",
+      "semester": "Semestre",
+      "prerequisites": "Prerrequisitos",
+      "corequisites": "Correquisitos",
+      "schedule": "Horario",
+      "day": "Día",
+      "startTime": "Hora Inicio",
+      "endTime": "Hora Fin",
+      "classroom": "Aula",
+      "classType": "Tipo de Clase",
+      "professor": "Profesor",
+      "students": "Estudiantes",
+      "capacity": "Capacidad",
+      "program": "Programa",
+      "faculty": "Facultad",
+      "year": "Año",
+      "period": "Período",
+      "duration": "Duración"
+    },
+    "messages": {
+      "loading": "Cargando...",
+      "success": "Operación exitosa",
+      "error": "Ha ocurrido un error",
+      "confirmDelete": "¿Está seguro de eliminar este elemento?",
+      "noData": "No hay datos disponibles",
+      "saved": "Guardado exitosamente",
+      "deleted": "Eliminado exitosamente",
+      "updated": "Actualizado exitosamente",
+      "created": "Creado exitosamente",
+      "notFound": "No encontrado",
+      "unauthorized": "No autorizado",
+      "forbidden": "Acceso prohibido",
+      "connectionError": "Error de conexión",
+      "validationError": "Error de validación",
+      "serverError": "Error del servidor",
+      "tryAgain": "Intentar de nuevo",
+      "sessionExpired": "Sesión expirada"
+    },
+    "validation": {
+      "required": "Este campo es obligatorio",
+      "minLength": "Mínimo {{count}} caracteres",
+      "maxLength": "Máximo {{count}} caracteres",
+      "min": "Valor mínimo {{count}}",
+      "max": "Valor máximo {{count}}",
+      "positive": "Debe ser un número positivo",
+      "negative": "Debe ser un número negativo",
+      "email": "Formato de correo inválido",
+      "phone": "Formato de teléfono inválido",
+      "url": "Formato de URL inválido",
+      "invalid": "Formato inválido",
+      "hoursConsistency": "Las horas teóricas + prácticas deben ser igual a créditos × 16",
+      "unique": "Este valor ya existe",
+      "numeric": "Debe ser un número",
+      "alphanumeric": "Solo se permiten caracteres alfanuméricos"
+    },
+    "notifications": "Notificaciones",
+    "profile": "Perfil",
+    "logout": "Cerrar sesión",
+    "language": "Idioma"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "subjects": "Asignaturas",
+    "curriculum": "Pensum",
+    "schedules": "Horarios",
+    "students": "Estudiantes",
+    "professors": "Profesores",
+    "classrooms": "Aulas",
+    "reports": "Reportes",
+    "settings": "Configuración",
+    "help": "Ayuda",
+    "about": "Acerca de"
+  },
+  "subjects": {
+    "title": "Gestión de Asignaturas",
+    "subtitle": "Administre las asignaturas del plan de estudios",
+    "createSubject": "Crear Asignatura",
+    "editSubject": "Editar Asignatura",
+    "subjectDetails": "Detalles de la Asignatura",
+    "listTitle": "Lista de Asignaturas",
+    "searchPlaceholder": "Buscar asignaturas...",
+    "filters": {
+      "all": "Todas",
+      "active": "Activas",
+      "inactive": "Inactivas",
+      "bySemester": "Por Semestre",
+      "byCredits": "Por Créditos",
+      "byProgram": "Por Programa",
+      "byFaculty": "Por Facultad"
+    },
+    "form": {
+      "basicInfo": "Información Básica",
+      "academicInfo": "Información Académica",
+      "scheduleInfo": "Información de Horario",
+      "requirements": "Requisitos",
+      "codeHelp": "Código único de 3-10 caracteres alfanuméricos",
+      "creditsHelp": "Número de créditos académicos (1-10)",
+      "hoursHelp": "Total de horas debe ser igual a créditos × 16",
+      "prerequisitesHelp": "Asignaturas que deben ser aprobadas previamente",
+      "corequisitesHelp": "Asignaturas que deben cursarse simultáneamente"
+    },
+    "validation": {
+      "codeExists": "Ya existe una asignatura con este código",
+      "invalidCode": "El código debe tener entre 3 y 10 caracteres alfanuméricos",
+      "invalidCredits": "Los créditos deben ser entre 1 y 10",
+      "hoursInconsistent": "Las horas no son consistentes con los créditos",
+      "nameRequired": "El nombre de la asignatura es obligatorio",
+      "descriptionTooLong": "La descripción no puede exceder 500 caracteres"
+    },
+    "stats": {
+      "total": "Total de Asignaturas",
+      "active": "Asignaturas Activas",
+      "inactive": "Asignaturas Inactivas",
+      "avgCredits": "Promedio de Créditos",
+      "totalCredits": "Créditos Totales",
+      "byFaculty": "Por Facultad",
+      "byProgram": "Por Programa"
+    },
+    "actions": {
+      "activate": "Activar asignatura",
+      "deactivate": "Desactivar asignatura",
+      "duplicate": "Duplicar asignatura",
+      "assignProfessor": "Asignar profesor",
+      "manageSchedule": "Gestionar horario",
+      "viewStudents": "Ver estudiantes"
+    }
+  },
+  "curriculum": {
+    "title": "Gestión de Pensum",
+    "subtitle": "Organice las asignaturas por semestres",
+    "studyPlan": "Plan de Estudios",
+    "semester": "Semestre {{number}}",
+    "totalCredits": "Créditos Totales",
+    "semesterCredits": "Créditos del Semestre",
+    "dragSubject": "Arrastra asignatura aquí",
+    "addSubjectToSemester": "Agregar Asignatura al Semestre",
+    "removeFromSemester": "Quitar del Semestre",
+    "prerequisites": "Prerrequisitos",
+    "corequisites": "Correquisitos",
+    "electiveCredits": "Créditos Electivos",
+    "coreCredits": "Créditos Obligatorios",
+    "validation": {
+      "semesterCredits": "El semestre debe tener entre 12 y 20 créditos",
+      "totalCredits": "El plan no puede exceder 200 créditos totales",
+      "prerequisiteOrder": "Los prerrequisitos deben estar en semestres anteriores",
+      "minimumCredits": "El plan debe tener al mínimo 140 créditos",
+      "maxSemesters": "El plan no puede exceder 12 semestres",
+      "duplicateSubject": "La asignatura ya está en el pensum"
+    },
+    "actions": {
+      "createPlan": "Crear Plan de Estudios",
+      "editPlan": "Editar Plan",
+      "validatePlan": "Validar Plan",
+      "exportPlan": "Exportar Plan",
+      "importPlan": "Importar Plan",
+      "clonePlan": "Clonar Plan"
+    },
+    "info": {
+      "totalDuration": "Duración Total",
+      "graduationRequirements": "Requisitos de Grado",
+      "electiveOptions": "Opciones Electivas",
+      "specializations": "Especializaciones"
+    }
+  },
+  "schedules": {
+    "title": "Gestión de Horarios",
+    "subtitle": "Configure los horarios de las asignaturas",
+    "weeklySchedule": "Horario Semanal",
+    "createSchedule": "Crear Horario",
+    "editSchedule": "Editar Horario",
+    "scheduleDetails": "Detalles del Horario",
+    "timeBlock": "Bloque de Tiempo",
+    "days": {
+      "monday": "Lunes",
+      "tuesday": "Martes",
+      "wednesday": "Miércoles",
+      "thursday": "Jueves",
+      "friday": "Viernes",
+      "saturday": "Sábado",
+      "sunday": "Domingo"
+    },
+    "daysShort": {
+      "monday": "L",
+      "tuesday": "M",
+      "wednesday": "X",
+      "thursday": "J",
+      "friday": "V",
+      "saturday": "S",
+      "sunday": "D"
+    },
+    "classTypes": {
+      "theoretical": "Teórica",
+      "practical": "Práctica",
+      "laboratory": "Laboratorio",
+      "seminar": "Seminario",
+      "workshop": "Taller",
+      "field": "Campo"
+    },
+    "validation": {
+      "timeConflict": "Hay conflicto de horario con otra asignatura",
+      "invalidTime": "La hora de fin debe ser posterior a la hora de inicio",
+      "duplicateSchedule": "Ya existe un horario para esta asignatura en este horario",
+      "classroomOccupied": "El aula está ocupada en este horario",
+      "professorConflict": "El profesor tiene conflicto de horario",
+      "minimumDuration": "La clase debe durar al menos 1 hora",
+      "maximumDuration": "La clase no puede durar más de 4 horas"
+    },
+    "filters": {
+      "byDay": "Por Día",
+      "byClassroom": "Por Aula",
+      "byProfessor": "Por Profesor",
+      "bySubject": "Por Asignatura",
+      "byProgram": "Por Programa",
+      "byTimeBlock": "Por Bloque de Tiempo"
+    },
+    "actions": {
+      "assignClassroom": "Asignar Aula",
+      "changeTime": "Cambiar Horario",
+      "cancelClass": "Cancelar Clase",
+      "reschedule": "Reprogramar",
+      "viewConflicts": "Ver Conflictos"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard - Sistema de Gestión de Asignaturas",
+    "welcome": "Bienvenido al Sistema",
+    "overview": "Resumen General",
+    "quickActions": "Acciones Rápidas",
+    "recentActivity": "Actividad Reciente",
+    "upcomingEvents": "Eventos Próximos",
+    "systemStatus": "Estado del Sistema",
+    "stats": {
+      "subjects": "Asignaturas",
+      "semesters": "Semestres",
+      "schedules": "Horarios",
+      "students": "Estudiantes",
+      "professors": "Profesores",
+      "classrooms": "Aulas",
+      "programs": "Programas",
+      "faculties": "Facultades"
+    },
+    "metrics": {
+      "activeSubjects": "Asignaturas Activas",
+      "scheduledClasses": "Clases Programadas",
+      "enrolledStudents": "Estudiantes Matriculados",
+      "utilizationRate": "Tasa de Utilización",
+      "averageCredits": "Promedio de Créditos",
+      "completionRate": "Tasa de Completitud"
+    },
+    "charts": {
+      "subjectsByFaculty": "Asignaturas por Facultad",
+      "enrollmentTrends": "Tendencias de Matrícula",
+      "classroomUtilization": "Utilización de Aulas",
+      "creditDistribution": "Distribución de Créditos"
+    }
+  },
+  "reports": {
+    "title": "Reportes y Análisis",
+    "subtitle": "Genere reportes del sistema académico",
+    "types": {
+      "academic": "Reportes Académicos",
+      "administrative": "Reportes Administrativos",
+      "statistical": "Reportes Estadísticos",
+      "custom": "Reportes Personalizados"
+    },
+    "formats": {
+      "pdf": "PDF",
+      "excel": "Excel",
+      "csv": "CSV",
+      "json": "JSON"
+    },
+    "filters": {
+      "dateRange": "Rango de Fechas",
+      "program": "Programa",
+      "faculty": "Facultad",
+      "semester": "Semestre",
+      "year": "Año"
+    }
+  },
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Personalice la configuración del sistema",
+    "sections": {
+      "profile": "Perfil de Usuario",
+      "application": "Configuración de Aplicación",
+      "system": "Configuración del Sistema",
+      "security": "Seguridad",
+      "notifications": "Notificaciones"
+    },
+    "profile": {
+      "personalInfo": "Información Personal",
+      "changePassword": "Cambiar Contraseña",
+      "preferences": "Preferencias"
+    },
+    "application": {
+      "language": "Idioma",
+      "theme": "Tema",
+      "itemsPerPage": "Elementos por Página",
+      "autoSave": "Guardado Automático",
+      "dateFormat": "Formato de Fecha",
+      "timeFormat": "Formato de Hora"
+    }
+  },
+  "errors": {
+    "404": {
+      "title": "Página no encontrada",
+      "message": "La página que buscas no existe",
+      "action": "Volver al inicio"
+    },
+    "500": {
+      "title": "Error del servidor",
+      "message": "Ha ocurrido un error interno",
+      "action": "Reportar problema"
+    },
+    "403": {
+      "title": "Acceso denegado",
+      "message": "No tienes permisos para acceder a esta página",
+      "action": "Contactar administrador"
+    },
+    "network": {
+      "title": "Error de conexión",
+      "message": "Verifica tu conexión a internet",
+      "action": "Reintentar"
+    }
+  }
+}

@@ -1,0 +1,149 @@
+:root {
+    --university-purple: #7c3aed;
+    --university-purple-dark: #6d28d9;
+    --university-purple-light: #a78bfa;
+    --university-blue: #2563eb;
+    --university-blue-light: #60a5fa;
+    --university-gray: #374151;
+    --university-gray-light: #6b7280;
+}
+
+/* Header universitario */
+.university-header {
+    background: linear-gradient(135deg, var(--university-purple) 0%, var(--university-blue) 100%);
+    box-shadow: 0 4px 25px -5px rgba(124, 58, 237, 0.1);
+}
+
+/* Logo universitario */
+.university-logo {
+    display: flex;
+    align-items: center;
+    space-x: 0.75rem;
+}
+
+.university-logo-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: white;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--university-purple);
+    font-size: 1.125rem;
+}
+
+/* Sidebar universitario */
+.university-sidebar {
+    background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+    border-right: 1px solid #e5e7eb;
+}
+
+/* Botones del tema universitario */
+.btn-university-primary {
+    background: linear-gradient(135deg, var(--university-purple) 0%, var(--university-blue) 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 15px -3px rgba(124, 58, 237, 0.2);
+}
+
+.btn-university-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 25px -5px rgba(124, 58, 237, 0.3);
+}
+
+/* Cards del tema universitario */
+.university-card {
+    background: white;
+    border-radius: 0.75rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07);
+    transition: all 0.2s ease-in-out;
+}
+
+.university-card:hover {
+    box-shadow: 0 4px 25px -5px rgba(124, 58, 237, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Navegación activa */
+.nav-item-active {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+    border-right: 3px solid var(--university-purple);
+    color: var(--university-purple);
+}
+
+/* Tablas del tema universitario */
+.university-table {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.university-table thead {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.university-table tbody tr:hover {
+    background: rgba(124, 58, 237, 0.02);
+}
+
+/* Formularios del tema universitario */
+.university-form-input {
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.university-form-input:focus {
+    border-color: var(--university-purple);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    outline: none;
+}
+
+/* Estados de validación */
+.form-input-success {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.form-input-error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Badges universitarios */
+.badge-university {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+    color: var(--university-purple);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+/* Gradientes de fondo */
+.bg-university-gradient {
+    background: linear-gradient(135deg, var(--university-purple) 0%, var(--university-blue) 100%);
+}
+
+.bg-university-light-gradient {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.05) 0%, rgba(37, 99, 235, 0.05) 100%);
+}
+
+/* Animaciones específicas */
+@keyframes universityPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(124, 58, 237, 0);
+    }
+}
+
+.animate-university-pulse {
+    animation: universityPulse 2s infinite;
+}
