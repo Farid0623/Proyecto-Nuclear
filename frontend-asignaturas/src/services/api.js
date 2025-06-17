@@ -1,3 +1,4 @@
+// src/services/api.js - Versión corregida
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -228,6 +229,20 @@ export const apiHelper = {
     put: (url, data = {}, config = {}) => requestWithRetry(() => api.put(url, data, config)),
     patch: (url, data = {}, config = {}) => requestWithRetry(() => api.patch(url, data, config)),
     delete: (url, config = {}) => requestWithRetry(() => api.delete(url, config)),
+};
+
+// Función adicional para mejor compatibilidad
+export const apiRequest = apiHelper;
+
+// Función para manejar respuesta de API
+export const handleApiResponse = (response) => {
+    return response.data;
+};
+
+// Función para manejar errores de API
+export const handleApiError = (error) => {
+    console.error('API Error:', error);
+    throw error;
 };
 
 // Función para verificar salud del API

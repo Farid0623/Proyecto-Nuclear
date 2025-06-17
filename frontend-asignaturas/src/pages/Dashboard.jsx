@@ -6,14 +6,12 @@ import {
     Calendar,
     Clock,
     Users,
-    Plus,
     TrendingUp,
     Activity,
     ArrowRight
 } from 'lucide-react';
 import { useAsignaturas } from '../hooks/useAsignaturas';
 import Card from '../components/common/Card';
-import Button from '../components/common/Button';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const Dashboard = () => {
@@ -151,6 +149,9 @@ const Dashboard = () => {
                         <div className="space-y-3">
                             {quickActions.map((action, index) => {
                                 const Icon = action.icon;
+                                const colorClass = `text-${action.color}-600`;
+                                const bgColorClass = `bg-${action.color}-100`;
+
                                 return (
                                     <Link
                                         key={index}
@@ -158,8 +159,8 @@ const Dashboard = () => {
                                         className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
                                     >
                                         <div className="flex items-center space-x-3">
-                                            <div className={`p-2 bg-${action.color}-100 rounded-lg`}>
-                                                <Icon className={`h-4 w-4 text-${action.color}-600`} />
+                                            <div className={`p-2 ${bgColorClass} rounded-lg`}>
+                                                <Icon className={`h-4 w-4 ${colorClass}`} />
                                             </div>
                                             <div>
                                                 <p className="font-medium text-gray-900">{action.title}</p>
@@ -187,7 +188,7 @@ const Dashboard = () => {
                         <div className="space-y-4">
                             <div className="flex items-start space-x-3">
                                 <div className="p-1 bg-success-100 rounded-full">
-                                    <Plus className="h-3 w-3 text-success-600" />
+                                    <BookOpen className="h-3 w-3 text-success-600" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm text-gray-900">

@@ -1,3 +1,4 @@
+// src/context/AppContext.js - Versión corregida
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -244,7 +245,7 @@ export const AppProvider = ({ children }) => {
     }, [state.preferences.darkMode]);
 
     // Acciones
-    const actions = {
+    const actions = React.useMemo(() => ({
         // Usuario
         setUser: (userData) => {
             dispatch({ type: actionTypes.SET_USER, payload: userData });
@@ -316,18 +317,18 @@ export const AppProvider = ({ children }) => {
         updateLastSync: () => {
             dispatch({ type: actionTypes.UPDATE_LAST_SYNC });
         },
-    };
+    }), []);
 
     // Helpers útiles
-    const helpers = {
+    const helpers = React.useMemo(() => ({
         isLoading: (key) => state.loading[key] || false,
         hasError: (key) => !!state.errors[key],
         getError: (key) => state.errors[key],
         isOnline: () => state.system.isOnline,
         getUnreadNotifications: () => state.notifications.filter(n => !n.read),
-    };
+    }), [state]);
 
-    const value = {
+    const value = React.useMemo(() => ({
         state,
         actions,
         helpers,
@@ -336,7 +337,7 @@ export const AppProvider = ({ children }) => {
         preferences: state.preferences,
         notifications: state.notifications,
         isOnline: state.system.isOnline,
-    };
+    }), [state, actions, helpers]);
 
     return (
         <AppContext.Provider value={value}>

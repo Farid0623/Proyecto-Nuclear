@@ -1,16 +1,21 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Menu, Bell, User, Globe, Sun, Moon, Settings } from 'lucide-react';
-import { useTheme } from '../../context/ThemeContext';
+import { Menu, Bell, User, Globe, Settings } from 'lucide-react';
 import Button from './Button';
 
 const Header = ({ onToggleSidebar }) => {
-    const { t, i18n } = useTranslation();
-    const { theme, toggleTheme } = useTheme();
+    const { i18n } = useTranslation();
 
     const toggleLanguage = () => {
         const newLang = i18n.language === 'es' ? 'en' : 'es';
         i18n.changeLanguage(newLang);
+    };
+
+    const handleToggleSidebar = () => {
+        if (onToggleSidebar && typeof onToggleSidebar === 'function') {
+            onToggleSidebar();
+        }
     };
 
     return (
@@ -21,7 +26,7 @@ const Header = ({ onToggleSidebar }) => {
                     <Button
                         variant="ghost"
                         size="sm"
-                        onClick={onToggleSidebar}
+                        onClick={handleToggleSidebar}
                         className="lg:hidden text-white hover:bg-white/10"
                     >
                         <Menu className="h-5 w-5" />
@@ -50,12 +55,12 @@ const Header = ({ onToggleSidebar }) => {
                         size="sm"
                         onClick={toggleLanguage}
                         className="hidden sm:flex text-white hover:bg-white/10"
-                        title={t('common.actions.changeLanguage')}
+                        title="Cambiar idioma"
                     >
                         <Globe className="h-4 w-4 mr-2" />
                         <span className="text-sm font-medium">
-              {i18n.language.toUpperCase()}
-            </span>
+                            {i18n.language.toUpperCase()}
+                        </span>
                     </Button>
 
                     {/* Settings */}
@@ -77,8 +82,8 @@ const Header = ({ onToggleSidebar }) => {
                     >
                         <Bell className="h-4 w-4" />
                         <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">
-              3
-            </span>
+                            3
+                        </span>
                     </Button>
 
                     {/* User Menu */}
@@ -105,6 +110,10 @@ const Header = ({ onToggleSidebar }) => {
             </div>
         </header>
     );
+};
+
+Header.propTypes = {
+    onToggleSidebar: PropTypes.func.isRequired
 };
 
 export default Header;
