@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { clsx } from 'clsx';
 
 const Card = ({
@@ -73,6 +74,59 @@ const CardFooter = ({ children, className, ...props }) => (
         {children}
     </div>
 );
+
+// PropTypes para Card principal
+Card.propTypes = {
+    children: PropTypes.node.isRequired,
+    className: PropTypes.string,
+    padding: PropTypes.oneOf(['none', 'sm', 'md', 'lg', 'xl']),
+    shadow: PropTypes.oneOf(['none', 'sm', 'md', 'lg', 'xl']),
+    hover: PropTypes.bool
+};
+
+Card.defaultProps = {
+    className: '',
+    padding: 'md',
+    shadow: 'sm',
+    hover: false
+};
+
+// PropTypes para subcomponentes
+CardHeader.propTypes = {
+    children: PropTypes.node.isRequired,
+    className: PropTypes.string
+};
+
+CardHeader.defaultProps = {
+    className: ''
+};
+
+CardTitle.propTypes = {
+    children: PropTypes.node.isRequired,
+    className: PropTypes.string
+};
+
+CardTitle.defaultProps = {
+    className: ''
+};
+
+CardContent.propTypes = {
+    children: PropTypes.node.isRequired,
+    className: PropTypes.string
+};
+
+CardContent.defaultProps = {
+    className: ''
+};
+
+CardFooter.propTypes = {
+    children: PropTypes.node.isRequired,
+    className: PropTypes.string
+};
+
+CardFooter.defaultProps = {
+    className: ''
+};
 
 // Exportar componentes individuales
 Card.Header = CardHeader;

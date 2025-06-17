@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { clsx } from 'clsx';
 
 const Button = React.forwardRef(({
@@ -70,6 +71,26 @@ const Button = React.forwardRef(({
         </button>
     );
 });
+
+// PropTypes
+Button.propTypes = {
+    children: PropTypes.node.isRequired,
+    className: PropTypes.string,
+    variant: PropTypes.oneOf(['primary', 'secondary', 'success', 'warning', 'danger', 'ghost', 'outline']),
+    size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
+    disabled: PropTypes.bool,
+    loading: PropTypes.bool,
+    type: PropTypes.oneOf(['button', 'submit', 'reset'])
+};
+
+Button.defaultProps = {
+    className: '',
+    variant: 'primary',
+    size: 'md',
+    disabled: false,
+    loading: false,
+    type: 'button'
+};
 
 Button.displayName = 'Button';
 

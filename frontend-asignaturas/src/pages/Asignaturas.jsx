@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import AsignaturaList from '../components/asignaturas/AsignaturaList';
 import AsignaturaForm from '../components/asignaturas/AsignaturaForm';
 import AsignaturaDetail from '../components/asignaturas/AsignaturaDetail';
@@ -128,11 +127,15 @@ const Asignaturas = () => {
     };
 
     const handleEdit = (asignatura) => {
-        navigate(`/asignaturas/${asignatura.id}/editar`);
+        if (asignatura?.id) {
+            navigate(`/asignaturas/${asignatura.id}/editar`);
+        }
     };
 
     const handleView = (asignatura) => {
-        navigate(`/asignaturas/${asignatura.id}`);
+        if (asignatura?.id) {
+            navigate(`/asignaturas/${asignatura.id}`);
+        }
     };
 
     return (

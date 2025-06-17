@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
 import {
-    Search, Filter, BookOpen, Plus, RefreshCw,
+    Search, Filter, BookOpen, RefreshCw,
     Grid, List, SortAsc, SortDesc
 } from 'lucide-react';
 import { useAsignaturasDisponibles } from '../../hooks/usePensum';
@@ -19,18 +19,16 @@ const AsignaturasPanel = ({
                               onSearch,
                               selectedSemestre = null
                           }) => {
-    const { t } = useTranslation();
-
     // Estados locales
-    const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list' | 'compact'
-    const [sortBy, setSortBy] = useState('nombre'); // 'nombre' | 'codigo' | 'creditos' | 'semestre'
-    const [sortOrder, setSortOrder] = useState('asc'); // 'asc' | 'desc'
+    const [viewMode, setViewMode] = useState('grid');
+    const [sortBy, setSortBy] = useState('nombre');
+    const [sortOrder, setSortOrder] = useState('asc');
     const [filters, setFilters] = useState({
         programa: '',
         facultad: '',
         creditos: '',
-        tipo: 'all', // 'all' | 'teorica' | 'practica' | 'laboratorio'
-        estado: 'active' // 'all' | 'active' | 'inactive'
+        tipo: 'all',
+        estado: 'active'
     });
     const [showFilters, setShowFilters] = useState(false);
 
@@ -48,52 +46,59 @@ const AsignaturasPanel = ({
 
     // Determinar qué asignaturas mostrar
     const asignaturasParaMostrar = useMemo(() => {
-        // Si hay un plan seleccionado, mostrar solo las disponibles
         if (planId && asignaturasDisponibles) {
             return asignaturasDisponibles;
         }
-        // Si no hay plan, mostrar todas las asignaturas activas
-        return todasAsignaturas?.filter(a => a.activa) || [];
+        return (todasAsignaturas || []).filter(a => a?.activa);
     }, [planId, asignaturasDisponibles, todasAsignaturas]);
 
-    // Filtrar y ordenar asignaturas
+    // Filtrar y ordenar asignaturas - REFACTORIZADO para evitar operador ternario anidado
     const asignaturasFiltradas = useMemo(() => {
-        let resultado = asignaturasParaMostrar;
+        let resultado = asignaturasParaMostrar || [];
 
         // Aplicar búsqueda por texto
         if (searchTerm) {
-            resultado = resultado.filter(asignatura =>
-                asignatura.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                asignatura.codigo.toLowerCase().includes(searchTerm.toLowerCase())
-            );
+            const searchLower = searchTerm.toLowerCase();
+            resultado = resultado.filter(asignatura => {
+                const nombre = asignatura?.nombre?.toLowerCase() || '';
+                const codigo = asignatura?.codigo?.toLowerCase() || '';
+                return nombre.includes(searchLower) || codigo.includes(searchLower);
+            });
         }
 
         // Aplicar filtros
         if (filters.creditos) {
-            resultado = resultado.filter(a => a.creditos?.toString() === filters.creditos);
+            resultado = resultado.filter(a => a?.creditos?.toString() === filters.creditos);
         }
 
         if (filters.tipo !== 'all') {
             resultado = resultado.filter(a => {
                 switch (filters.tipo) {
-                    case 'teorica': return !a.esPractica && !a.esLaboratorio;
-                    case 'practica': return a.esPractica;
-                    case 'laboratorio': return a.esLaboratorio;
-                    default: return true;
+                    case 'teorica':
+                        return !a?.esPractica && !a?.esLaboratorio;
+                    case 'practica':
+                        return a?.esPractica;
+                    case 'laboratorio':
+                        return a?.esLaboratorio;
+                    default:
+                        return true;
                 }
             });
         }
 
+        // REFACTORIZADO: Extraer operador ternario anidado
         if (filters.estado !== 'all') {
-            resultado = resultado.filter(a =>
-                filters.estado === 'active' ? a.activa : !a.activa
-            );
+            if (filters.estado === 'active') {
+                resultado = resultado.filter(a => a?.activa);
+            } else {
+                resultado = resultado.filter(a => !a?.activa);
+            }
         }
 
         // Aplicar ordenamiento
         resultado.sort((a, b) => {
-            let valueA = a[sortBy];
-            let valueB = b[sortBy];
+            let valueA = a?.[sortBy] || '';
+            let valueB = b?.[sortBy] || '';
 
             if (typeof valueA === 'string') {
                 valueA = valueA.toLowerCase();
@@ -102,9 +107,8 @@ const AsignaturasPanel = ({
 
             if (sortOrder === 'asc') {
                 return valueA > valueB ? 1 : -1;
-            } else {
-                return valueA < valueB ? 1 : -1;
             }
+            return valueA < valueB ? 1 : -1;
         });
 
         return resultado;
@@ -135,10 +139,47 @@ const AsignaturasPanel = ({
             tipo: 'all',
             estado: 'active'
         });
-        onSearch('');
+        if (onSearch && typeof onSearch === 'function') {
+            onSearch('');
+        }
+    };
+
+    const handleRefresh = () => {
+        if (refetchDisponibles && typeof refetchDisponibles === 'function') {
+            refetchDisponibles();
+        }
+    };
+
+    const handleSearch = (value) => {
+        if (onSearch && typeof onSearch === 'function') {
+            onSearch(value);
+        }
     };
 
     const isLoading = loadingDisponibles || loadingTodas;
+
+    // Calcular estadísticas
+    const stats = {
+        disponibles: asignaturasFiltradas.length,
+        creditos: asignaturasFiltradas.reduce((sum, a) => sum + (a?.creditos || 0), 0),
+        activas: asignaturasFiltradas.filter(a => a?.activa).length
+    };
+
+    // REFACTORIZADO: Función para determinar el mensaje cuando no hay asignaturas
+    const getEmptyMessage = () => {
+        const hasActiveFilters = searchTerm || Object.values(filters).some(f => f && f !== 'all');
+
+        if (hasActiveFilters) {
+            return 'No se encontraron asignaturas';
+        }
+
+        return 'No hay asignaturas disponibles';
+    };
+
+    // REFACTORIZADO: Función para determinar si mostrar botón de limpiar filtros
+    const shouldShowClearFilters = () => {
+        return searchTerm || Object.values(filters).some(f => f && f !== 'all');
+    };
 
     return (
         <Card className="h-full flex flex-col">
@@ -154,7 +195,7 @@ const AsignaturasPanel = ({
                         <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => refetchDisponibles()}
+                            onClick={handleRefresh}
                             disabled={isLoading}
                         >
                             <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
@@ -173,19 +214,15 @@ const AsignaturasPanel = ({
                 {/* Estadísticas rápidas */}
                 <div className="grid grid-cols-3 gap-2 mt-3 text-xs">
                     <div className="text-center bg-gray-50 rounded p-2">
-                        <div className="font-semibold text-gray-900">{asignaturasFiltradas.length}</div>
+                        <div className="font-semibold text-gray-900">{stats.disponibles}</div>
                         <div className="text-gray-500">Disponibles</div>
                     </div>
                     <div className="text-center bg-blue-50 rounded p-2">
-                        <div className="font-semibold text-blue-900">
-                            {asignaturasFiltradas.reduce((sum, a) => sum + (a.creditos || 0), 0)}
-                        </div>
+                        <div className="font-semibold text-blue-900">{stats.creditos}</div>
                         <div className="text-blue-600">Créditos</div>
                     </div>
                     <div className="text-center bg-green-50 rounded p-2">
-                        <div className="font-semibold text-green-900">
-                            {asignaturasFiltradas.filter(a => a.activa).length}
-                        </div>
+                        <div className="font-semibold text-green-900">{stats.activas}</div>
                         <div className="text-green-600">Activas</div>
                     </div>
                 </div>
@@ -198,8 +235,8 @@ const AsignaturasPanel = ({
                     <Input
                         type="text"
                         placeholder="Buscar asignaturas..."
-                        value={searchTerm}
-                        onChange={(e) => onSearch(e.target.value)}
+                        value={searchTerm || ''}
+                        onChange={(e) => handleSearch(e.target.value)}
                         className="pl-10 text-sm"
                     />
                 </div>
@@ -297,12 +334,9 @@ const AsignaturasPanel = ({
                     <div className="text-center py-8">
                         <BookOpen className="h-8 w-8 text-gray-400 mx-auto mb-2" />
                         <p className="text-gray-500 text-sm mb-2">
-                            {searchTerm || Object.values(filters).some(f => f && f !== 'all')
-                                ? 'No se encontraron asignaturas'
-                                : 'No hay asignaturas disponibles'
-                            }
+                            {getEmptyMessage()}
                         </p>
-                        {searchTerm || Object.values(filters).some(f => f && f !== 'all') ? (
+                        {shouldShowClearFilters() && (
                             <Button
                                 variant="ghost"
                                 size="sm"
@@ -311,21 +345,15 @@ const AsignaturasPanel = ({
                             >
                                 Limpiar filtros
                             </Button>
-                        ) : null}
+                        )}
                     </div>
                 ) : (
-                    <div className={clsx(
-                        'space-y-3',
-                        viewMode === 'grid' && 'grid grid-cols-1 gap-3',
-                        viewMode === 'compact' && 'flex flex-wrap gap-2'
-                    )}>
+                    <div className="space-y-3">
                         {asignaturasFiltradas.map((asignatura) => (
                             <AsignaturaDragDrop
-                                key={asignatura.id}
+                                key={asignatura?.id || asignatura?.codigo}
                                 asignatura={asignatura}
                                 draggable={true}
-                                showDetails={viewMode !== 'compact'}
-                                compact={viewMode === 'compact'}
                             />
                         ))}
                     </div>
@@ -343,6 +371,20 @@ const AsignaturasPanel = ({
             </div>
         </Card>
     );
+};
+
+// PropTypes
+AsignaturasPanel.propTypes = {
+    planId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    searchTerm: PropTypes.string,
+    onSearch: PropTypes.func.isRequired,
+    selectedSemestre: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+};
+
+AsignaturasPanel.defaultProps = {
+    planId: null,
+    searchTerm: '',
+    selectedSemestre: null
 };
 
 export default AsignaturasPanel;
