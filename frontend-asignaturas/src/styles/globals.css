@@ -1,0 +1,363 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Importar fuente Inter de Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Variables CSS personalizadas */
+:root {
+    --color-primary: #3b82f6;
+    --color-primary-dark: #1d4ed8;
+    --color-secondary: #64748b;
+    --color-success: #22c55e;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+    --font-family-sans: 'Inter', ui-sans-serif, system-ui;
+    --shadow-soft: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+    --shadow-medium: 0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 40px -7px rgba(0, 0, 0, 0.1);
+    --border-radius-lg: 0.75rem;
+}
+
+/* Base styles */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-family-sans);
+    line-height: 1.6;
+    color: #374151;
+    background-color: #f9fafb;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utilidades personalizadas */
+.line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+/* Scrollbar personalizado */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Animaciones personalizadas */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Clases de utilidad */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+}
+
+.animate-slide-down {
+    animation: slideDown 0.3s ease-out;
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.2s ease-out;
+}
+
+.animate-pulse-slow {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Sombras personalizadas */
+.shadow-soft {
+    box-shadow: var(--shadow-soft);
+}
+
+.shadow-medium {
+    box-shadow: var(--shadow-medium);
+}
+
+/* Estados de focus mejorados */
+.focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+}
+
+/* Estilos para drag and drop */
+.drag-over {
+    @apply border-primary-400 border-dashed bg-primary-50;
+}
+
+.dragging {
+    @apply opacity-50 transform rotate-3 scale-105;
+}
+
+/* Estilos para formularios mejorados */
+.form-input {
+    @apply block w-full rounded-md border-gray-300 shadow-sm transition-colors duration-200;
+    @apply focus:border-primary-500 focus:ring-primary-500;
+    @apply disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed;
+}
+
+.form-input-error {
+    @apply border-red-300 text-red-900 placeholder-red-300;
+    @apply focus:border-red-500 focus:ring-red-500;
+}
+
+/* Estilos para tablas */
+.table-responsive {
+    @apply overflow-x-auto;
+}
+
+.table-stripe tbody tr:nth-child(odd) {
+    @apply bg-gray-50;
+}
+
+.table-hover tbody tr:hover {
+    @apply bg-gray-100;
+}
+
+/* Estados de loading */
+.loading-skeleton {
+    @apply animate-pulse bg-gray-200 rounded;
+}
+
+.loading-spinner {
+    border: 2px solid #f3f4f6;
+    border-top: 2px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Estilos para notificaciones/toast */
+.toast-enter {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.toast-enter-active {
+    transform: translateX(0);
+    opacity: 1;
+    transition: transform 300ms ease-out, opacity 300ms ease-out;
+}
+
+.toast-exit {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast-exit-active {
+    transform: translateX(100%);
+    opacity: 0;
+    transition: transform 300ms ease-in, opacity 300ms ease-in;
+}
+
+/* Estilos para modales */
+.modal-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 z-50;
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+    @apply relative bg-white rounded-lg shadow-xl max-w-lg w-full mx-4;
+    @apply animate-scale-in;
+}
+
+/* Responsive utilities adicionales */
+@media (max-width: 640px) {
+    .mobile-full {
+        @apply w-full;
+    }
+
+    .mobile-hidden {
+        @apply hidden;
+    }
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    .print-only {
+        display: block !important;
+    }
+
+    body {
+        background: white !important;
+        color: black !important;
+    }
+}
+
+/* Dark mode support (si se implementa) */
+@media (prefers-color-scheme: dark) {
+    .dark-mode {
+        @apply bg-gray-900 text-gray-100;
+    }
+}
+
+/* Accessibility improvements */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Focus visible para mejor accesibilidad */
+.focus-visible:focus {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+}
+
+/* Estilos para elementos interactivos */
+.interactive {
+    @apply transition-all duration-200 ease-in-out;
+    @apply hover:shadow-md hover:-translate-y-0.5;
+    @apply active:translate-y-0 active:shadow-sm;
+}
+
+/* Grid layouts responsivos */
+.grid-auto-fit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.grid-auto-fill {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Estilos para badges y chips */
+.badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-primary {
+    @apply bg-primary-100 text-primary-800;
+}
+
+.badge-success {
+    @apply bg-green-100 text-green-800;
+}
+
+.badge-warning {
+    @apply bg-yellow-100 text-yellow-800;
+}
+
+.badge-danger {
+    @apply bg-red-100 text-red-800;
+}
+
+/* Estilos para dividers */
+.divider {
+    @apply border-t border-gray-200 my-4;
+}
+
+.divider-vertical {
+    @apply border-l border-gray-200 mx-4;
+}
+
+/* Contenedores con max-width */
+.container-sm {
+    @apply max-w-2xl mx-auto px-4;
+}
+
+.container-md {
+    @apply max-w-4xl mx-auto px-4;
+}
+
+.container-lg {
+    @apply max-w-6xl mx-auto px-4;
+}
+
+.container-xl {
+    @apply max-w-7xl mx-auto px-4;
+}
