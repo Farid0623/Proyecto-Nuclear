@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  # Base de datos MongoDB
+  mongodb:
+    image: mongo:7.0
+    container_name: modulo-asignaturas-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_DATABASE: modulo_asignaturas
+    volumes:
+      - mongodb_data:/data/db
+      - ./docker/mongo-init:/docker-entrypoint-initdb.d
+    networks:
+      - modulo-asignaturas-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Aplicación Spring Boot
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: modulo-asignaturas-app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      # Configuración de MongoDB
+      SPRING_DATA_MONGODB_HOST: mongodb
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: modulo_asignaturas
+      SPRING_DATA_MONGODB_USERNAME: admin
+      SPRING_DATA_MONGODB_PASSWORD: admin123
+      SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE: admin
+
+      # Configuración JWT
+      APP_JWT_SECRET: myDockerSecretKey123456789012345678901234567890abcdefghijklmnop
+      APP_JWT_EXPIRATION_MS: 86400000
+
+      # Configuración Spring
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+
+      # Logging
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: DEBUG
+      LOGGING_LEVEL_CO_EDU_CUE_MODULOASIGNATURAS: INFO
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - modulo-asignaturas-network
+    volumes:
+      - app_logs:/app/logs
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api/test/all"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # MongoDB Express (Interfaz web para MongoDB - Opcional)
+  mongo-express:
+    image: mongo-express:1.0.0
+    container_name: modulo-asignaturas-mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin123
+      ME_CONFIG_MONGODB_URL: mongodb://admin:admin123@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - modulo-asignaturas-network
+
+# Redes
+networks:
+  modulo-asignaturas-network:
+    driver: bridge
+
+# Volúmenes persistentes
+volumes:
+  mongodb_data:
+    driver: local
+  app_logs:
+    driver: local
