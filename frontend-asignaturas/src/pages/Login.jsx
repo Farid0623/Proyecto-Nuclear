@@ -17,13 +17,11 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [redirecting, setRedirecting] = useState(false);
 
-    const from = location.state?.from?.pathname || '/';
+    const from = location.state?.from?.pathname || '/dashboard';
 
-    // Verificar autenticación y redirigir
     useEffect(() => {
         if (user.isAuthenticated && !redirecting) {
             setRedirecting(true);
-            // Redirección controlada por React Router
             setTimeout(() => {
                 navigate(from, { replace: true });
             }, 100);
@@ -42,37 +40,28 @@ const Login = () => {
     });
 
     const doLogin = async (userData) => {
-        // Crear tokens mock
         const mockToken = 'token-' + Date.now();
         const mockRefreshToken = 'refresh-' + Date.now();
 
-        // Guardar en localStorage primero
         localStorage.setItem('authToken', mockToken);
         localStorage.setItem('refreshToken', mockRefreshToken);
-        localStorage.setItem('userData', JSON.stringify(userData));
+        // GUARDAR COMO currentUser Y CON isAuthenticated: true!
+        localStorage.setItem('currentUser', JSON.stringify({ ...userData, isAuthenticated: true }));
 
-        // Actualizar contexto - importante: isAuthenticated: true
         actions.setUser({ ...userData, isAuthenticated: true });
-
         toast.success(`¡Bienvenido ${userData.nombre}!`);
-        // No recargues la página, deja que el useEffect haga la redirección
     };
 
     const onSubmit = async (data) => {
         setIsLoading(true);
         try {
-            // Simular delay de login
             await new Promise(resolve => setTimeout(resolve, 1000));
-
-            // Datos del usuario mock
             const userData = {
                 id: 1,
                 nombre: 'Administrador Demo',
                 email: data.email,
                 rol: 'administrador'
             };
-
-            // Ejecutar login
             await doLogin(userData);
         } catch (error) {
             toast.error('Error en el login');
@@ -93,10 +82,9 @@ const Login = () => {
         setIsLoading(false);
     };
 
-    // Si está redirigiendo, mostrar loading
     if (redirecting) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-red-600 flex items-center justify-center p-4">
+            <div className="min-h-screen bg-gradient-to-br from-primary-600 to-secondary-500 flex items-center justify-center p-4">
                 <Card className="p-8 text-center">
                     <LoadingSpinner size="lg" className="mx-auto mb-4" />
                     <h2 className="text-xl font-semibold text-gray-900 mb-2">
@@ -111,9 +99,9 @@ const Login = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-red-600 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-primary-600 to-secondary-500 flex items-center justify-center p-4">
             <div className="w-full max-w-md">
-                {/* Debug Info - Solo visible en desarrollo */}
+                {/* Debug Info */}
                 {process.env.NODE_ENV === 'development' && (
                     <div className="mb-4 p-3 bg-black text-white text-xs rounded">
                         <div>🔧 DEBUG:</div>
@@ -128,7 +116,7 @@ const Login = () => {
                 {/* Header */}
                 <div className="text-center mb-8">
                     <div className="w-16 h-16 mx-auto mb-4 bg-white rounded-lg flex items-center justify-center shadow-lg">
-                        <span className="text-blue-600 font-bold text-2xl">AH</span>
+                        <span className="text-primary-600 font-bold text-2xl">AH</span>
                     </div>
                     <h1 className="text-3xl font-bold text-white mb-2 drop-shadow-lg">
                         Sistema de Gestión
@@ -184,7 +172,7 @@ const Login = () => {
 
                         <Button
                             type="submit"
-                            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-lg shadow-lg transform transition hover:scale-105"
+                            className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-4 rounded-lg shadow-lg transform transition hover:scale-105"
                             loading={isLoading}
                             disabled={isLoading}
                         >
@@ -206,14 +194,14 @@ const Login = () => {
                             type="button"
                             onClick={handleQuickLogin}
                             disabled={isLoading}
-                            className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg transform transition hover:scale-105"
+                            className="w-full bg-secondary-500 hover:bg-secondary-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg transform transition hover:scale-105"
                         >
                             ⚡ Acceso Rápido (Demo)
                         </Button>
                     </form>
 
-                    <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
-                        <div className="text-sm text-blue-800">
+                    <div className="mt-6 p-4 bg-primary-50 rounded-lg border border-primary-200">
+                        <div className="text-sm text-primary-800">
                             <strong>Credenciales de Prueba:</strong><br />
                             📧 Email: admin@cue.edu.co<br />
                             🔑 Password: admin123

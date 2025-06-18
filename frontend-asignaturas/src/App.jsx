@@ -13,6 +13,7 @@ import { ThemeProvider } from './context/ThemeContext';
 // Componentes principales
 import Layout from './components/common/Layout';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import AuthGuard from './components/auth/AuthGuard'; // Agrega este import si usas AuthGuard
 import LoadingSpinner from './components/common/LoadingSpinner';
 import ErrorBoundary from './components/validacion/ErrorBoundary';
 
@@ -56,41 +57,38 @@ function App() {
                     <AppProvider>
                         <DndProvider backend={HTML5Backend}>
                             <Router>
-                                <div className="App min-h-screen bg-gray-50">
+                                <div>
                                     <Suspense fallback={<SuspenseLoader />}>
                                         <Routes>
-                                            {/* Ruta de login */}
                                             <Route path="/login" element={<Login />} />
-
+                                            <Route
+                                                path="/dashboard"
+                                                element={
+                                                    <AuthGuard>
+                                                        <Dashboard />
+                                                    </AuthGuard>
+                                                }
+                                            />
                                             {/* Rutas protegidas */}
-                                            <Route path="/*" element={
-                                                <ProtectedRoute>
-                                                    <Layout>
-                                                        <Routes>
-                                                            {/* Ruta principal - Dashboard */}
-                                                            <Route path="/" element={<Dashboard />} />
-
-                                                            {/* Módulo de Asignaturas */}
-                                                            <Route path="/asignaturas/*" element={<Asignaturas />} />
-
-                                                            {/* Módulo de Pensum */}
-                                                            <Route path="/pensum/*" element={<Pensum />} />
-
-                                                            {/* Módulo de Horarios */}
-                                                            <Route path="/horarios/*" element={<Horarios />} />
-
-                                                            {/* Configuración */}
-                                                            <Route path="/configuracion" element={<Configuracion />} />
-
-                                                            {/* Redirección para rutas no encontradas */}
-                                                            <Route path="*" element={<Navigate to="/" replace />} />
-                                                        </Routes>
-                                                    </Layout>
-                                                </ProtectedRoute>
-                                            } />
+                                            <Route
+                                                path="/*"
+                                                element={
+                                                    <ProtectedRoute>
+                                                        <Layout>
+                                                            <Routes>
+                                                                <Route path="/" element={<Dashboard />} />
+                                                                <Route path="/asignaturas/*" element={<Asignaturas />} />
+                                                                <Route path="/pensum/*" element={<Pensum />} />
+                                                                <Route path="/horarios/*" element={<Horarios />} />
+                                                                <Route path="/configuracion" element={<Configuracion />} />
+                                                                <Route path="*" element={<Navigate to="/" replace />} />
+                                                            </Routes>
+                                                        </Layout>
+                                                    </ProtectedRoute>
+                                                }
+                                            />
                                         </Routes>
                                     </Suspense>
-
                                     {/* Notificaciones Toast */}
                                     <Toaster
                                         position="top-right"
@@ -116,7 +114,6 @@ function App() {
                                             },
                                         }}
                                     />
-
                                     {/* React Query DevTools en desarrollo */}
                                     {process.env.NODE_ENV === 'development' && (
                                         <ReactQueryDevtools initialIsOpen={false} />
