@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { clsx } from 'clsx';
 
 const Select = React.forwardRef(({
@@ -51,6 +52,25 @@ const Select = React.forwardRef(({
         </div>
     );
 });
+
+Select.propTypes = {
+    label: PropTypes.string,
+    error: PropTypes.string,
+    helpText: PropTypes.string,
+    className: PropTypes.string,
+    children: PropTypes.node.isRequired,
+    disabled: PropTypes.bool,
+    required: PropTypes.bool
+};
+
+Select.defaultProps = {
+    label: null,
+    error: null,
+    helpText: null,
+    className: '',
+    disabled: false,
+    required: false
+};
 
 Select.displayName = 'Select';
 

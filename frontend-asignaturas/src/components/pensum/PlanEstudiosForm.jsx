@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { X, Save } from 'lucide-react';
 import Modal from '../common/Modal';
@@ -8,8 +8,6 @@ import Input from '../common/Input';
 import Select from '../common/Select';
 
 const PlanEstudiosForm = ({ pensum = null, onClose, onSave, isLoading = false }) => {
-    const { t } = useTranslation();
-
     const {
         register,
         handleSubmit,
@@ -193,6 +191,28 @@ const PlanEstudiosForm = ({ pensum = null, onClose, onSave, isLoading = false })
             </form>
         </Modal>
     );
+};
+
+PlanEstudiosForm.propTypes = {
+    pensum: PropTypes.shape({
+        nombre: PropTypes.string,
+        programa: PropTypes.string,
+        facultad: PropTypes.string,
+        duracionSemestres: PropTypes.number,
+        creditosMinimos: PropTypes.number,
+        creditosMaximos: PropTypes.number,
+        modalidad: PropTypes.string,
+        vigencia: PropTypes.number,
+        activo: PropTypes.bool
+    }),
+    onClose: PropTypes.func.isRequired,
+    onSave: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool
+};
+
+PlanEstudiosForm.defaultProps = {
+    pensum: null,
+    isLoading: false
 };
 
 export default PlanEstudiosForm;

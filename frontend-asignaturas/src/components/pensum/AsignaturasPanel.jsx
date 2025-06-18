@@ -52,7 +52,29 @@ const AsignaturasPanel = ({
         return (todasAsignaturas || []).filter(a => a?.activa);
     }, [planId, asignaturasDisponibles, todasAsignaturas]);
 
-    // Filtrar y ordenar asignaturas - REFACTORIZADO para evitar operador ternario anidado
+    // Función para determinar el filtro por tipo - Extraída operación ternaria anidada
+    const getFilteredByType = (asignatura, tipoFilter) => {
+        switch (tipoFilter) {
+            case 'teorica':
+                return !asignatura?.esPractica && !asignatura?.esLaboratorio;
+            case 'practica':
+                return asignatura?.esPractica;
+            case 'laboratorio':
+                return asignatura?.esLaboratorio;
+            default:
+                return true;
+        }
+    };
+
+    // Función para determinar el filtro por estado - Extraída operación ternaria anidada
+    const getFilteredByStatus = (asignatura, estadoFilter) => {
+        if (estadoFilter === 'all') return true;
+        if (estadoFilter === 'active') return asignatura?.activa;
+        if (estadoFilter === 'inactive') return !asignatura?.activa;
+        return true;
+    };
+
+    // Filtrar y ordenar asignaturas
     const asignaturasFiltradas = useMemo(() => {
         let resultado = asignaturasParaMostrar || [];
 
@@ -72,28 +94,11 @@ const AsignaturasPanel = ({
         }
 
         if (filters.tipo !== 'all') {
-            resultado = resultado.filter(a => {
-                switch (filters.tipo) {
-                    case 'teorica':
-                        return !a?.esPractica && !a?.esLaboratorio;
-                    case 'practica':
-                        return a?.esPractica;
-                    case 'laboratorio':
-                        return a?.esLaboratorio;
-                    default:
-                        return true;
-                }
-            });
+            resultado = resultado.filter(a => getFilteredByType(a, filters.tipo));
         }
 
-        // REFACTORIZADO: Extraer operador ternario anidado
-        if (filters.estado !== 'all') {
-            if (filters.estado === 'active') {
-                resultado = resultado.filter(a => a?.activa);
-            } else {
-                resultado = resultado.filter(a => !a?.activa);
-            }
-        }
+        // Filtrar por estado usando la función extraída
+        resultado = resultado.filter(a => getFilteredByStatus(a, filters.estado));
 
         // Aplicar ordenamiento
         resultado.sort((a, b) => {
@@ -117,7 +122,7 @@ const AsignaturasPanel = ({
     // Handlers
     const handleSortChange = (newSortBy) => {
         if (sortBy === newSortBy) {
-            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+            setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
         } else {
             setSortBy(newSortBy);
             setSortOrder('asc');
@@ -165,7 +170,7 @@ const AsignaturasPanel = ({
         activas: asignaturasFiltradas.filter(a => a?.activa).length
     };
 
-    // REFACTORIZADO: Función para determinar el mensaje cuando no hay asignaturas
+    // Función para determinar el mensaje cuando no hay asignaturas
     const getEmptyMessage = () => {
         const hasActiveFilters = searchTerm || Object.values(filters).some(f => f && f !== 'all');
 
@@ -176,7 +181,7 @@ const AsignaturasPanel = ({
         return 'No hay asignaturas disponibles';
     };
 
-    // REFACTORIZADO: Función para determinar si mostrar botón de limpiar filtros
+    // Función para determinar si mostrar botón de limpiar filtros
     const shouldShowClearFilters = () => {
         return searchTerm || Object.values(filters).some(f => f && f !== 'all');
     };
@@ -204,7 +209,7 @@ const AsignaturasPanel = ({
                         <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => setShowFilters(!showFilters)}
+                            onClick={() => setShowFilters(prev => !prev)}
                         >
                             <Filter className="h-4 w-4" />
                         </Button>

@@ -1,11 +1,9 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
 import { BookOpen, Calendar, TrendingUp, BarChart } from 'lucide-react';
 import Card from '../common/Card';
 
 const PensumStats = ({ estadisticas, className }) => {
-    const { t } = useTranslation();
-
     if (!estadisticas) return null;
 
     return (
@@ -61,6 +59,21 @@ const PensumStats = ({ estadisticas, className }) => {
             </div>
         </div>
     );
+};
+
+PensumStats.propTypes = {
+    estadisticas: PropTypes.shape({
+        totalAsignaturas: PropTypes.number,
+        totalSemestres: PropTypes.number,
+        totalCreditos: PropTypes.number,
+        progresoCompletitud: PropTypes.number
+    }),
+    className: PropTypes.string
+};
+
+PensumStats.defaultProps = {
+    estadisticas: null,
+    className: ''
 };
 
 export default PensumStats;

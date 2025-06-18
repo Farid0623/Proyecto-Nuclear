@@ -6,7 +6,7 @@ import Card from '../common/Card';
 import Button from '../common/Button';
 import { DIAS_SEMANA, HORAS_ACADEMICAS } from '../../utils/constants';
 
-const HorarioGrid = ({ horarios = [], onAddHorario, onEditHorario, onDeleteHorario }) => {
+const HorarioGrid = ({ horarios = [], onAddHorario, onEditHorario }) => {
     const { t } = useTranslation();
     const [selectedWeek, setSelectedWeek] = useState('current');
 
@@ -29,24 +29,25 @@ const HorarioGrid = ({ horarios = [], onAddHorario, onEditHorario, onDeleteHorar
             }
         };
 
+        const handleKeyDown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleClick();
+            }
+        };
+
         return (
-            <div
-                className="p-2 bg-university-purple text-white rounded text-xs cursor-pointer hover:bg-university-purple-dark transition-colors"
+            <button
+                type="button"
+                className="w-full p-2 bg-university-purple text-white rounded text-xs hover:bg-university-purple-dark transition-colors text-left"
                 onClick={handleClick}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handleClick();
-                    }
-                }}
-                tabIndex={0}
-                role="button"
+                onKeyDown={handleKeyDown}
                 aria-label={`Editar horario de ${horario?.asignatura?.nombre || 'asignatura'}`}
             >
                 <div className="font-medium truncate">{horario?.asignatura?.nombre || 'Sin nombre'}</div>
                 <div className="opacity-80 truncate">{horario?.aula || 'Sin aula'}</div>
                 <div className="opacity-70">{horario?.tipoClase || 'Sin tipo'}</div>
-            </div>
+            </button>
         );
     };
 
@@ -179,15 +180,13 @@ HorarioGrid.propTypes = {
         })
     })),
     onAddHorario: PropTypes.func,
-    onEditHorario: PropTypes.func,
-    onDeleteHorario: PropTypes.func
+    onEditHorario: PropTypes.func
 };
 
 HorarioGrid.defaultProps = {
     horarios: [],
     onAddHorario: null,
-    onEditHorario: null,
-    onDeleteHorario: null
+    onEditHorario: null
 };
 
 export default HorarioGrid;

@@ -1,11 +1,11 @@
-// src/components/pensum/PensumView.jsx - Vista completa y mejorada del pensum
+// src/components/pensum/PensumView.jsx - Vista completa y limpia del pensum
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import {
-    Plus, Save, Download, Upload, BarChart3, CheckCircle,
-    AlertTriangle, RefreshCw, Filter, Search, Eye, Settings
+    Plus, Save, Download, BarChart3,
+    Filter, Search, Eye
 } from 'lucide-react';
 import {
     usePlanesEstudio,
@@ -36,15 +36,10 @@ const PensumView = () => {
     const [validationResults, setValidationResults] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'tree' | 'compact'
-    const [filters, setFilters] = useState({
-        programa: '',
-        facultad: '',
-        estado: 'all'
-    });
 
     // Hooks de datos
-    const { data: planesEstudio, isLoading: loadingPlanes } = usePlanesEstudio(filters);
-    const { data: mallaCurricular, isLoading: loadingMalla, refetch: refetchMalla } = useMallaCurricular(selectedPlanId);
+    const { data: planesEstudio, isLoading: loadingPlanes } = usePlanesEstudio();
+    const { data: mallaCurricular, isLoading: loadingMalla } = useMallaCurricular(selectedPlanId);
     const { data: asignaturasActivas } = useAsignaturasActivas();
     const { data: estadisticas } = useEstadisticasPensum(selectedPlanId);
 
@@ -58,6 +53,18 @@ const PensumView = () => {
             setSelectedPlanId(planesEstudio[0].id);
         }
     }, [planesEstudio, selectedPlanId]);
+
+    // Función para extraer operación ternaria anidada compleja
+    const getCompactViewContent = (semestre, index) => {
+        const defaultCreditos = semestre.creditos || 0;
+        const defaultAsignaturas = semestre.asignaturas || [];
+
+        return {
+            numero: index + 1,
+            creditos: defaultCreditos,
+            asignaturas: defaultAsignaturas
+        };
+    };
 
     // Handlers
     const handlePlanChange = useCallback((planId) => {
@@ -213,7 +220,7 @@ const PensumView = () => {
 
                         <Button
                             variant="outline"
-                            onClick={() => setShowAsignaturasPanel(!showAsignaturasPanel)}
+                            onClick={() => setShowAsignaturasPanel(prev => !prev)}
                             className="flex items-center justify-center"
                         >
                             <Filter className="h-4 w-4 mr-2" />
@@ -233,7 +240,7 @@ const PensumView = () => {
                             ) : (
                                 <ul className="list-disc list-inside space-y-1">
                                     {validationResults.errors?.map((error, index) => (
-                                        <li key={index}>{error}</li>
+                                        <li key={`error-${index}`}>{error}</li>
                                     ))}
                                 </ul>
                             )
@@ -276,7 +283,7 @@ const PensumView = () => {
                                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                                             {mallaCurricular.semestres?.map((semestre, index) => (
                                                 <SemestreCard
-                                                    key={semestre.id || index}
+                                                    key={`semestre-${semestre.id || index}`}
                                                     semestre={semestre}
                                                     numero={index + 1}
                                                     planId={selectedPlanId}
@@ -296,28 +303,31 @@ const PensumView = () => {
 
                                     {viewMode === 'compact' && (
                                         <div className="space-y-4">
-                                            {mallaCurricular.semestres?.map((semestre, index) => (
-                                                <Card key={semestre.id || index} className="p-4">
-                                                    <div className="flex items-center justify-between mb-3">
-                                                        <h3 className="font-semibold">
-                                                            Semestre {index + 1}
-                                                        </h3>
-                                                        <span className="text-sm text-gray-600">
-                                                            {semestre.creditos || 0} créditos
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {semestre.asignaturas?.map((asignatura) => (
-                                                            <span
-                                                                key={asignatura.id}
-                                                                className="inline-flex items-center px-2 py-1 rounded bg-university-purple text-white text-xs"
-                                                            >
-                                                                {asignatura.codigo}
+                                            {mallaCurricular.semestres?.map((semestre, index) => {
+                                                const compactData = getCompactViewContent(semestre, index);
+                                                return (
+                                                    <Card key={`compact-${semestre.id || index}`} className="p-4">
+                                                        <div className="flex items-center justify-between mb-3">
+                                                            <h3 className="font-semibold">
+                                                                Semestre {compactData.numero}
+                                                            </h3>
+                                                            <span className="text-sm text-gray-600">
+                                                                {compactData.creditos} créditos
                                                             </span>
-                                                        ))}
-                                                    </div>
-                                                </Card>
-                                            ))}
+                                                        </div>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {compactData.asignaturas.map((asignatura) => (
+                                                                <span
+                                                                    key={`asig-${asignatura.id}`}
+                                                                    className="inline-flex items-center px-2 py-1 rounded bg-university-purple text-white text-xs"
+                                                                >
+                                                                    {asignatura.codigo}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </Card>
+                                                );
+                                            })}
                                         </div>
                                     )}
                                 </div>
