@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 import { Toaster } from 'react-hot-toast';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -28,20 +27,14 @@ const Login = React.lazy(() => import('./pages/Login'));
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            retry: 3,
-            retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
-            staleTime: 5 * 60 * 1000, // 5 minutos
-            cacheTime: 10 * 60 * 1000, // 10 minutos
+            retry: 2,
+            staleTime: 5 * 60 * 1000,
             refetchOnWindowFocus: false,
-            refetchOnReconnect: true,
-        },
-        mutations: {
-            retry: 1,
         },
     },
 });
 
-// Componente de carga para Suspense
+// Loading component
 const SuspenseLoader = () => (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <LoadingSpinner size="lg" />
@@ -59,30 +52,19 @@ function App() {
                                 <div className="App min-h-screen bg-gray-50">
                                     <Suspense fallback={<SuspenseLoader />}>
                                         <Routes>
-                                            {/* Ruta de login */}
+                                            {/* Login route */}
                                             <Route path="/login" element={<Login />} />
 
-                                            {/* Rutas protegidas */}
+                                            {/* Protected routes */}
                                             <Route path="/*" element={
                                                 <ProtectedRoute>
                                                     <Layout>
                                                         <Routes>
-                                                            {/* Ruta principal - Dashboard */}
                                                             <Route path="/" element={<Dashboard />} />
-
-                                                            {/* Módulo de Asignaturas */}
                                                             <Route path="/asignaturas/*" element={<Asignaturas />} />
-
-                                                            {/* Módulo de Pensum */}
                                                             <Route path="/pensum/*" element={<Pensum />} />
-
-                                                            {/* Módulo de Horarios */}
                                                             <Route path="/horarios/*" element={<Horarios />} />
-
-                                                            {/* Configuración */}
                                                             <Route path="/configuracion" element={<Configuracion />} />
-
-                                                            {/* Redirección para rutas no encontradas */}
                                                             <Route path="*" element={<Navigate to="/" replace />} />
                                                         </Routes>
                                                     </Layout>
@@ -91,7 +73,7 @@ function App() {
                                         </Routes>
                                     </Suspense>
 
-                                    {/* Notificaciones Toast */}
+                                    {/* Toast notifications */}
                                     <Toaster
                                         position="top-right"
                                         toastOptions={{
@@ -100,27 +82,8 @@ function App() {
                                                 background: '#363636',
                                                 color: '#fff',
                                             },
-                                            success: {
-                                                duration: 3000,
-                                                iconTheme: {
-                                                    primary: '#22c55e',
-                                                    secondary: '#fff',
-                                                },
-                                            },
-                                            error: {
-                                                duration: 5000,
-                                                iconTheme: {
-                                                    primary: '#ef4444',
-                                                    secondary: '#fff',
-                                                },
-                                            },
                                         }}
                                     />
-
-                                    {/* React Query DevTools en desarrollo */}
-                                    {process.env.NODE_ENV === 'development' && (
-                                        <ReactQueryDevtools initialIsOpen={false} />
-                                    )}
                                 </div>
                             </Router>
                         </DndProvider>
