@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { Save, X, AlertCircle } from 'lucide-react';
@@ -16,23 +17,33 @@ const AsignaturaForm = ({
     const { t } = useTranslation();
     const { validateAsignatura } = useValidation();
 
+    // Validar props con valores por defecto
+    const asignaturaData = asignatura ? {
+        codigo: asignatura.codigo || '',
+        nombre: asignatura.nombre || '',
+        descripcion: asignatura.descripcion || '',
+        creditos: asignatura.creditos || 1,
+        horasTeoricas: asignatura.horasTeoricas || 16,
+        horasPracticas: asignatura.horasPracticas || 0,
+        activa: asignatura.activa ?? true
+    } : {
+        codigo: '',
+        nombre: '',
+        descripcion: '',
+        creditos: 1,
+        horasTeoricas: 16,
+        horasPracticas: 0,
+        activa: true
+    };
+
     const {
         register,
         handleSubmit,
         watch,
         setValue,
-        formState: { errors, isDirty },
-        reset
+        formState: { errors, isDirty }
     } = useForm({
-        defaultValues: {
-            codigo: asignatura?.codigo || '',
-            nombre: asignatura?.nombre || '',
-            descripcion: asignatura?.descripcion || '',
-            creditos: asignatura?.creditos || 1,
-            horasTeoricas: asignatura?.horasTeoricas || 16,
-            horasPracticas: asignatura?.horasPracticas || 0,
-            activa: asignatura?.activa ?? true
-        }
+        defaultValues: asignaturaData
     });
 
     const watchedCreditos = watch('creditos');
@@ -56,15 +67,19 @@ const AsignaturaForm = ({
         return (teoricas + practicas) === (creditos * 16);
     };
 
-    const onSubmit = async (data) => {
+    const handleFormSubmit = async (data) => {
         try {
+            if (!onSave || typeof onSave !== 'function') {
+                console.error('onSave handler not provided');
+                return;
+            }
+
             // Validar datos usando el servicio de validación
             const validationResult = await validateAsignatura(data);
 
             if (!validationResult.esValido) {
                 // Mostrar errores de validación
                 Object.entries(validationResult.errores).forEach(([field, message]) => {
-                    // Aquí podrías mostrar errores específicos
                     console.error(`${field}: ${message}`);
                 });
                 return;
@@ -73,6 +88,12 @@ const AsignaturaForm = ({
             await onSave(data);
         } catch (error) {
             console.error('Error al guardar asignatura:', error);
+        }
+    };
+
+    const handleCancel = () => {
+        if (onCancel && typeof onCancel === 'function') {
+            onCancel();
         }
     };
 
@@ -88,7 +109,7 @@ const AsignaturaForm = ({
                     </Card.Title>
                 </Card.Header>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
                     {/* Información Básica */}
                     <div>
                         <h3 className="text-lg font-medium text-gray-900 mb-4">
@@ -244,7 +265,7 @@ const AsignaturaForm = ({
                             <Button
                                 type="button"
                                 variant="outline"
-                                onClick={onCancel}
+                                onClick={handleCancel}
                                 disabled={isLoading}
                             >
                                 <X className="h-4 w-4 mr-2" />
@@ -265,6 +286,29 @@ const AsignaturaForm = ({
             </Card>
         </div>
     );
+};
+
+// Definición de PropTypes
+AsignaturaForm.propTypes = {
+    asignatura: PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        codigo: PropTypes.string,
+        nombre: PropTypes.string,
+        descripcion: PropTypes.string,
+        creditos: PropTypes.number,
+        horasTeoricas: PropTypes.number,
+        horasPracticas: PropTypes.number,
+        activa: PropTypes.bool
+    }),
+    onSave: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool
+};
+
+// Valores por defecto
+AsignaturaForm.defaultProps = {
+    asignatura: null,
+    isLoading: false
 };
 
 export default AsignaturaForm;

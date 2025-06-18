@@ -6,14 +6,12 @@ import {
     Calendar,
     Clock,
     Users,
-    Plus,
     TrendingUp,
     Activity,
     ArrowRight
 } from 'lucide-react';
 import { useAsignaturas } from '../hooks/useAsignaturas';
 import Card from '../components/common/Card';
-import Button from '../components/common/Button';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const Dashboard = () => {
@@ -32,6 +30,7 @@ const Dashboard = () => {
 
     const quickActions = [
         {
+            id: 'create-subject',
             title: t('subjects.createSubject'),
             description: 'Crear nueva asignatura en el sistema',
             icon: BookOpen,
@@ -39,6 +38,7 @@ const Dashboard = () => {
             color: 'primary'
         },
         {
+            id: 'manage-curriculum',
             title: 'Gestionar Pensum',
             description: 'Organizar asignaturas por semestres',
             icon: Calendar,
@@ -46,11 +46,59 @@ const Dashboard = () => {
             color: 'success'
         },
         {
+            id: 'configure-schedules',
             title: 'Configurar Horarios',
             description: 'Asignar horarios a las materias',
             icon: Clock,
             href: '/horarios',
             color: 'warning'
+        }
+    ];
+
+    const recentActivities = [
+        {
+            id: 'activity-1',
+            type: 'create',
+            icon: BookOpen,
+            bgColor: 'bg-success-100',
+            iconColor: 'text-success-600',
+            title: 'Nueva asignatura',
+            description: 'Matemáticas III',
+            action: 'creada',
+            time: 'Hace 2 horas'
+        },
+        {
+            id: 'activity-2',
+            type: 'update',
+            icon: Calendar,
+            bgColor: 'bg-primary-100',
+            iconColor: 'text-primary-600',
+            title: 'Pensum actualizado para',
+            description: 'Ingeniería de Software',
+            action: '',
+            time: 'Hace 4 horas'
+        },
+        {
+            id: 'activity-3',
+            type: 'assign',
+            icon: Clock,
+            bgColor: 'bg-warning-100',
+            iconColor: 'text-warning-600',
+            title: 'Horarios asignados para',
+            description: '5 asignaturas',
+            action: '',
+            time: 'Ayer'
+        },
+        {
+            id: 'activity-4',
+            type: 'enrollment',
+            icon: Users,
+            bgColor: 'bg-purple-100',
+            iconColor: 'text-purple-600',
+            title: '12 estudiantes',
+            description: 'matriculados en nuevas asignaturas',
+            action: '',
+            time: 'Hace 2 días'
         }
     ];
 
@@ -149,17 +197,20 @@ const Dashboard = () => {
 
                     <Card.Content>
                         <div className="space-y-3">
-                            {quickActions.map((action, index) => {
+                            {quickActions.map((action) => {
                                 const Icon = action.icon;
+                                const colorClass = `text-${action.color}-600`;
+                                const bgColorClass = `bg-${action.color}-100`;
+
                                 return (
                                     <Link
-                                        key={index}
+                                        key={action.id}
                                         to={action.href}
                                         className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
                                     >
                                         <div className="flex items-center space-x-3">
-                                            <div className={`p-2 bg-${action.color}-100 rounded-lg`}>
-                                                <Icon className={`h-4 w-4 text-${action.color}-600`} />
+                                            <div className={`p-2 ${bgColorClass} rounded-lg`}>
+                                                <Icon className={`h-4 w-4 ${colorClass}`} />
                                             </div>
                                             <div>
                                                 <p className="font-medium text-gray-900">{action.title}</p>
@@ -185,53 +236,23 @@ const Dashboard = () => {
 
                     <Card.Content>
                         <div className="space-y-4">
-                            <div className="flex items-start space-x-3">
-                                <div className="p-1 bg-success-100 rounded-full">
-                                    <Plus className="h-3 w-3 text-success-600" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm text-gray-900">
-                                        Nueva asignatura <span className="font-medium">Matemáticas III</span> creada
-                                    </p>
-                                    <p className="text-xs text-gray-500">Hace 2 horas</p>
-                                </div>
-                            </div>
+                            {recentActivities.map((activity) => {
+                                const Icon = activity.icon;
 
-                            <div className="flex items-start space-x-3">
-                                <div className="p-1 bg-primary-100 rounded-full">
-                                    <Calendar className="h-3 w-3 text-primary-600" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm text-gray-900">
-                                        Pensum actualizado para <span className="font-medium">Ingeniería de Software</span>
-                                    </p>
-                                    <p className="text-xs text-gray-500">Hace 4 horas</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start space-x-3">
-                                <div className="p-1 bg-warning-100 rounded-full">
-                                    <Clock className="h-3 w-3 text-warning-600" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm text-gray-900">
-                                        Horarios asignados para <span className="font-medium">5 asignaturas</span>
-                                    </p>
-                                    <p className="text-xs text-gray-500">Ayer</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start space-x-3">
-                                <div className="p-1 bg-purple-100 rounded-full">
-                                    <Users className="h-3 w-3 text-purple-600" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm text-gray-900">
-                                        <span className="font-medium">12 estudiantes</span> matriculados en nuevas asignaturas
-                                    </p>
-                                    <p className="text-xs text-gray-500">Hace 2 días</p>
-                                </div>
-                            </div>
+                                return (
+                                    <div key={activity.id} className="flex items-start space-x-3">
+                                        <div className={`p-1 ${activity.bgColor} rounded-full`}>
+                                            <Icon className={`h-3 w-3 ${activity.iconColor}`} />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm text-gray-900">
+                                                {activity.title} <span className="font-medium">{activity.description}</span> {activity.action}
+                                            </p>
+                                            <p className="text-xs text-gray-500">{activity.time}</p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </Card.Content>
                 </Card>

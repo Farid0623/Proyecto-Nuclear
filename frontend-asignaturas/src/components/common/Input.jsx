@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { clsx } from 'clsx';
 
 const Input = React.forwardRef(({
@@ -52,6 +53,27 @@ const Input = React.forwardRef(({
         </div>
     );
 });
+
+// PropTypes
+Input.propTypes = {
+    label: PropTypes.string,
+    error: PropTypes.string,
+    helpText: PropTypes.string,
+    className: PropTypes.string,
+    type: PropTypes.oneOf(['text', 'email', 'password', 'number', 'tel', 'url', 'search']),
+    disabled: PropTypes.bool,
+    required: PropTypes.bool
+};
+
+Input.defaultProps = {
+    label: '',
+    error: '',
+    helpText: '',
+    className: '',
+    type: 'text',
+    disabled: false,
+    required: false
+};
 
 Input.displayName = 'Input';
 

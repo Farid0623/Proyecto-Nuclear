@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useLocation, Link } from 'react-router-dom';
 import {
@@ -62,14 +63,29 @@ const Sidebar = ({ isOpen, onClose }) => {
         }
     ];
 
+    const handleClose = () => {
+        if (onClose && typeof onClose === 'function') {
+            onClose();
+        }
+    };
+
+    const handleLinkClick = () => {
+        // Cerrar sidebar en móvil después de hacer clic en un enlace
+        handleClose();
+    };
+
     return (
         <>
             {/* Mobile overlay */}
             {isOpen && (
-                <div
+                <button
+                    type="button"
                     className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
-                    onClick={onClose}
-                />
+                    onClick={handleClose}
+                    aria-label="Cerrar menú de navegación"
+                >
+                    <span className="sr-only">Cerrar menú de navegación</span>
+                </button>
             )}
 
             {/* Sidebar */}
@@ -87,8 +103,10 @@ const Sidebar = ({ isOpen, onClose }) => {
                             <span className="text-lg font-semibold text-gray-900 ml-2">Menú</span>
                         </div>
                         <button
-                            onClick={onClose}
+                            type="button"
+                            onClick={handleClose}
                             className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+                            aria-label="Cerrar menú"
                         >
                             <X className="h-5 w-5" />
                         </button>
@@ -100,9 +118,9 @@ const Sidebar = ({ isOpen, onClose }) => {
                             const Icon = item.icon;
                             return (
                                 <Link
-                                    key={item.name}
+                                    key={`nav-${item.name}`}
                                     to={item.href}
-                                    onClick={onClose}
+                                    onClick={handleLinkClick}
                                     className={clsx(
                                         'flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200',
                                         item.current
@@ -146,6 +164,12 @@ const Sidebar = ({ isOpen, onClose }) => {
             </div>
         </>
     );
+};
+
+// PropTypes
+Sidebar.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired
 };
 
 export default Sidebar;

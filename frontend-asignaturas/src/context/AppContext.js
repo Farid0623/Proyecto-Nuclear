@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
 
 // Estado inicial
 const initialState = {
@@ -100,6 +100,7 @@ const appReducer = (state, action) => {
             };
 
         case actionTypes.UPDATE_PREFERENCES:
+        {
             const updatedPreferences = {
                 ...state.preferences,
                 ...action.payload,
@@ -110,8 +111,10 @@ const appReducer = (state, action) => {
                 ...state,
                 preferences: updatedPreferences,
             };
+        }
 
         case actionTypes.TOGGLE_DARK_MODE:
+        {
             const newDarkMode = !state.preferences.darkMode;
             const newPreferences = {
                 ...state.preferences,
@@ -122,8 +125,10 @@ const appReducer = (state, action) => {
                 ...state,
                 preferences: newPreferences,
             };
+        }
 
         case actionTypes.ADD_NOTIFICATION:
+        {
             const notification = {
                 id: Date.now().toString(),
                 timestamp: new Date().toISOString(),
@@ -133,6 +138,7 @@ const appReducer = (state, action) => {
                 ...state,
                 notifications: [notification, ...state.notifications].slice(0, 50), // Mantener máximo 50
             };
+        }
 
         case actionTypes.REMOVE_NOTIFICATION:
             return {
@@ -165,11 +171,14 @@ const appReducer = (state, action) => {
             };
 
         case actionTypes.CLEAR_ERROR:
-            const { [action.payload]: removed, ...remainingErrors } = state.errors;
+        {
+            const newErrors = { ...state.errors };
+            delete newErrors[action.payload];
             return {
                 ...state,
-                errors: remainingErrors,
+                errors: newErrors,
             };
+        }
 
         case actionTypes.CLEAR_ALL_ERRORS:
             return {
@@ -196,8 +205,6 @@ export const useApp = () => {
 
 // Provider del contexto
 export const AppProvider = ({ children }) => {
-    const { t } = useTranslation();
-
     // Cargar preferencias del localStorage
     const loadInitialState = () => {
         try {
@@ -243,41 +250,10 @@ export const AppProvider = ({ children }) => {
         }
     }, [state.preferences.darkMode]);
 
-    // Acciones
-    const actions = {
-        // Usuario
-        setUser: (userData) => {
-            dispatch({ type: actionTypes.SET_USER, payload: userData });
-        },
-
-        logout: () => {
-            localStorage.removeItem('authToken');
-            dispatch({ type: actionTypes.LOGOUT });
-        },
-
-        // Preferencias
-        updatePreferences: (preferences) => {
-            dispatch({ type: actionTypes.UPDATE_PREFERENCES, payload: preferences });
-        },
-
-        toggleDarkMode: () => {
-            dispatch({ type: actionTypes.TOGGLE_DARK_MODE });
-        },
-
-        // Notificaciones
-        addNotification: (notification) => {
-            dispatch({ type: actionTypes.ADD_NOTIFICATION, payload: notification });
-        },
-
-        removeNotification: (id) => {
-            dispatch({ type: actionTypes.REMOVE_NOTIFICATION, payload: id });
-        },
-
-        clearNotifications: () => {
-            dispatch({ type: actionTypes.CLEAR_NOTIFICATIONS });
-        },
-
-        showNotification: (message, type = 'info', options = {}) => {
+    // Acciones - Usando useCallback para evitar re-creaciones innecesarias
+    const actions = React.useMemo(() => {
+        // Función helper para mostrar notificaciones
+        const showNotificationHelper = (message, type = 'info', options = {}) => {
             const notification = {
                 message,
                 type,
@@ -289,45 +265,81 @@ export const AppProvider = ({ children }) => {
             // Auto-remover después del tiempo especificado
             if (notification.duration > 0) {
                 setTimeout(() => {
-                    actions.removeNotification(notification.id);
+                    dispatch({ type: actionTypes.REMOVE_NOTIFICATION, payload: notification.id });
                 }, notification.duration);
             }
-        },
+        };
 
-        // Loading states
-        setLoading: (key, value) => {
-            dispatch({ type: actionTypes.SET_LOADING, payload: { key, value } });
-        },
+        return {
+            // Usuario
+            setUser: (userData) => {
+                dispatch({ type: actionTypes.SET_USER, payload: userData });
+            },
 
-        // Errores
-        setError: (key, error) => {
-            dispatch({ type: actionTypes.SET_ERROR, payload: { key, error } });
-        },
+            logout: () => {
+                localStorage.removeItem('authToken');
+                dispatch({ type: actionTypes.LOGOUT });
+            },
 
-        clearError: (key) => {
-            dispatch({ type: actionTypes.CLEAR_ERROR, payload: key });
-        },
+            // Preferencias
+            updatePreferences: (preferences) => {
+                dispatch({ type: actionTypes.UPDATE_PREFERENCES, payload: preferences });
+            },
 
-        clearAllErrors: () => {
-            dispatch({ type: actionTypes.CLEAR_ALL_ERRORS });
-        },
+            toggleDarkMode: () => {
+                dispatch({ type: actionTypes.TOGGLE_DARK_MODE });
+            },
 
-        // Sistema
-        updateLastSync: () => {
-            dispatch({ type: actionTypes.UPDATE_LAST_SYNC });
-        },
-    };
+            // Notificaciones
+            addNotification: (notification) => {
+                dispatch({ type: actionTypes.ADD_NOTIFICATION, payload: notification });
+            },
+
+            removeNotification: (id) => {
+                dispatch({ type: actionTypes.REMOVE_NOTIFICATION, payload: id });
+            },
+
+            clearNotifications: () => {
+                dispatch({ type: actionTypes.CLEAR_NOTIFICATIONS });
+            },
+
+            showNotification: showNotificationHelper,
+
+            // Loading states
+            setLoading: (key, value) => {
+                dispatch({ type: actionTypes.SET_LOADING, payload: { key, value } });
+            },
+
+            // Errores
+            setError: (key, error) => {
+                dispatch({ type: actionTypes.SET_ERROR, payload: { key, error } });
+            },
+
+            clearError: (key) => {
+                dispatch({ type: actionTypes.CLEAR_ERROR, payload: key });
+            },
+
+            clearAllErrors: () => {
+                dispatch({ type: actionTypes.CLEAR_ALL_ERRORS });
+            },
+
+            // Sistema
+            updateLastSync: () => {
+                dispatch({ type: actionTypes.UPDATE_LAST_SYNC });
+            },
+        };
+    }, []); // Sin dependencias porque todas las funciones están bien encapsuladas
 
     // Helpers útiles
-    const helpers = {
+    const helpers = React.useMemo(() => ({
         isLoading: (key) => state.loading[key] || false,
         hasError: (key) => !!state.errors[key],
         getError: (key) => state.errors[key],
         isOnline: () => state.system.isOnline,
         getUnreadNotifications: () => state.notifications.filter(n => !n.read),
-    };
+    }), [state]);
 
-    const value = {
+    const value = React.useMemo(() => ({
         state,
         actions,
         helpers,
@@ -336,13 +348,18 @@ export const AppProvider = ({ children }) => {
         preferences: state.preferences,
         notifications: state.notifications,
         isOnline: state.system.isOnline,
-    };
+    }), [state, actions, helpers]);
 
     return (
         <AppContext.Provider value={value}>
             {children}
         </AppContext.Provider>
     );
+};
+
+// PropTypes para AppProvider
+AppProvider.propTypes = {
+    children: PropTypes.node.isRequired
 };
 
 export default AppContext;

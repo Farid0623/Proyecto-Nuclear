@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { clsx } from 'clsx';
@@ -52,32 +53,41 @@ const Modal = ({
 
     const modalContent = (
         <div className="fixed inset-0 z-50 overflow-y-auto">
+            {/* Backdrop */}
             <div
-                className="flex min-h-screen items-center justify-center p-4 text-center sm:p-0"
+                className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
                 onClick={handleBackdropClick}
-            >
-                <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" />
+                aria-hidden="true"
+            />
 
-                <div className={clsx(
-                    'relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all w-full',
-                    sizeClasses[size],
-                    'animate-scale-in',
-                    className
-                )}>
+            {/* Modal container */}
+            <div className="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
+                <dialog
+                    open={isOpen}
+                    className={clsx(
+                        'relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all w-full',
+                        sizeClasses[size],
+                        'animate-scale-in',
+                        className
+                    )}
+                    aria-labelledby={title ? 'modal-title' : undefined}
+                >
                     {/* Header */}
                     {(title || showCloseButton) && (
                         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
                             {title && (
-                                <h3 className="text-lg font-semibold text-gray-900">
+                                <h3 id="modal-title" className="text-lg font-semibold text-gray-900">
                                     {title}
                                 </h3>
                             )}
                             {showCloseButton && (
                                 <Button
+                                    type="button"
                                     variant="ghost"
                                     size="sm"
                                     onClick={onClose}
                                     className="text-gray-400 hover:text-gray-600"
+                                    aria-label="Cerrar modal"
                                 >
                                     <X className="h-5 w-5" />
                                 </Button>
@@ -96,12 +106,35 @@ const Modal = ({
                             {footer}
                         </div>
                     )}
-                </div>
+                </dialog>
             </div>
         </div>
     );
 
     return createPortal(modalContent, document.body);
+};
+
+Modal.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    title: PropTypes.string,
+    children: PropTypes.node.isRequired,
+    size: PropTypes.oneOf(['sm', 'md', 'lg', 'xl', 'full']),
+    showCloseButton: PropTypes.bool,
+    closeOnBackdrop: PropTypes.bool,
+    closeOnEscape: PropTypes.bool,
+    footer: PropTypes.node,
+    className: PropTypes.string
+};
+
+Modal.defaultProps = {
+    title: null,
+    size: 'md',
+    showCloseButton: true,
+    closeOnBackdrop: true,
+    closeOnEscape: true,
+    footer: null,
+    className: ''
 };
 
 export default Modal;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Plus, Search, Filter, Edit, Trash2, Eye } from 'lucide-react';
+import { Plus, Search, Filter } from 'lucide-react';
 import { useAsignaturas } from '../../hooks/useAsignaturas';
 import Card from '../common/Card';
 import Button from '../common/Button';
@@ -20,23 +21,60 @@ const AsignaturaList = ({ onCreateNew, onEdit, onView }) => {
         credits: ''
     });
 
+    // Validar props con valores por defecto
+    const handlers = {
+        onCreateNew: onCreateNew || (() => console.warn('onCreateNew handler not provided')),
+        onEdit: onEdit || (() => console.warn('onEdit handler not provided')),
+        onView: onView || (() => console.warn('onView handler not provided'))
+    };
+
     // Filtrar asignaturas
-    const filteredAsignaturas = asignaturas?.filter(asignatura => {
-        const matchesSearch = asignatura.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            asignatura.codigo.toLowerCase().includes(searchTerm.toLowerCase());
+    const filteredAsignaturas = (asignaturas || []).filter(asignatura => {
+        // Validar que asignatura tenga las propiedades necesarias
+        const asignaturaData = {
+            nombre: asignatura?.nombre || '',
+            codigo: asignatura?.codigo || '',
+            activa: asignatura?.activa ?? false,
+            numeroSemestre: asignatura?.numeroSemestre || null,
+            creditos: asignatura?.creditos || null
+        };
+
+        const matchesSearch = asignaturaData.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            asignaturaData.codigo.toLowerCase().includes(searchTerm.toLowerCase());
 
         const matchesStatus = filters.status === 'all' ||
-            (filters.status === 'active' && asignatura.activa) ||
-            (filters.status === 'inactive' && !asignatura.activa);
+            (filters.status === 'active' && asignaturaData.activa) ||
+            (filters.status === 'inactive' && !asignaturaData.activa);
 
         const matchesSemester = !filters.semester ||
-            asignatura.numeroSemestre?.toString() === filters.semester;
+            asignaturaData.numeroSemestre?.toString() === filters.semester;
 
         const matchesCredits = !filters.credits ||
-            asignatura.creditos?.toString() === filters.credits;
+            asignaturaData.creditos?.toString() === filters.credits;
 
         return matchesSearch && matchesStatus && matchesSemester && matchesCredits;
-    }) || [];
+    });
+
+    // Handlers con validación
+    const handleCreateNew = () => {
+        handlers.onCreateNew();
+    };
+
+    const handleEdit = (asignatura) => {
+        if (asignatura) {
+            handlers.onEdit(asignatura);
+        }
+    };
+
+    const handleView = (asignatura) => {
+        if (asignatura) {
+            handlers.onView(asignatura);
+        }
+    };
+
+    const handleToggleFilters = () => {
+        setShowFilters(!showFilters);
+    };
 
     if (isLoading) {
         return (
@@ -54,6 +92,16 @@ const AsignaturaList = ({ onCreateNew, onEdit, onView }) => {
         );
     }
 
+    // Calcular estadísticas con validación
+    const stats = {
+        total: (asignaturas || []).length,
+        active: (asignaturas || []).filter(a => a?.activa).length,
+        inactive: (asignaturas || []).filter(a => !a?.activa).length,
+        avgCredits: (asignaturas || []).length > 0
+            ? ((asignaturas || []).reduce((sum, a) => sum + (a?.creditos || 0), 0) / (asignaturas || []).length).toFixed(1)
+            : '0'
+    };
+
     return (
         <div className="space-y-6">
             {/* Header con acciones */}
@@ -70,14 +118,14 @@ const AsignaturaList = ({ onCreateNew, onEdit, onView }) => {
                 <div className="flex flex-wrap gap-2">
                     <Button
                         variant="outline"
-                        onClick={() => setShowFilters(!showFilters)}
+                        onClick={handleToggleFilters}
                         className="flex items-center"
                     >
                         <Filter className="h-4 w-4 mr-2" />
                         {t('common.actions.filter')}
                     </Button>
 
-                    <Button onClick={onCreateNew}>
+                    <Button onClick={handleCreateNew}>
                         <Plus className="h-4 w-4 mr-2" />
                         {t('subjects.createSubject')}
                     </Button>
@@ -113,7 +161,7 @@ const AsignaturaList = ({ onCreateNew, onEdit, onView }) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card className="text-center">
                     <div className="text-2xl font-bold text-gray-900">
-                        {asignaturas?.length || 0}
+                        {stats.total}
                     </div>
                     <div className="text-sm text-gray-600">
                         {t('subjects.stats.total')}
@@ -122,7 +170,7 @@ const AsignaturaList = ({ onCreateNew, onEdit, onView }) => {
 
                 <Card className="text-center">
                     <div className="text-2xl font-bold text-success-600">
-                        {asignaturas?.filter(a => a.activa).length || 0}
+                        {stats.active}
                     </div>
                     <div className="text-sm text-gray-600">
                         {t('subjects.stats.active')}
@@ -131,7 +179,7 @@ const AsignaturaList = ({ onCreateNew, onEdit, onView }) => {
 
                 <Card className="text-center">
                     <div className="text-2xl font-bold text-danger-600">
-                        {asignaturas?.filter(a => !a.activa).length || 0}
+                        {stats.inactive}
                     </div>
                     <div className="text-sm text-gray-600">
                         {t('subjects.stats.inactive')}
@@ -140,10 +188,7 @@ const AsignaturaList = ({ onCreateNew, onEdit, onView }) => {
 
                 <Card className="text-center">
                     <div className="text-2xl font-bold text-primary-600">
-                        {asignaturas?.length > 0
-                            ? (asignaturas.reduce((sum, a) => sum + (a.creditos || 0), 0) / asignaturas.length).toFixed(1)
-                            : '0'
-                        }
+                        {stats.avgCredits}
                     </div>
                     <div className="text-sm text-gray-600">
                         {t('subjects.stats.avgCredits')}
@@ -162,7 +207,7 @@ const AsignaturaList = ({ onCreateNew, onEdit, onView }) => {
                             }
                         </p>
                         {!searchTerm && Object.values(filters).every(f => !f || f === 'all') && (
-                            <Button onClick={onCreateNew}>
+                            <Button onClick={handleCreateNew}>
                                 <Plus className="h-4 w-4 mr-2" />
                                 {t('subjects.createSubject')}
                             </Button>
@@ -173,16 +218,30 @@ const AsignaturaList = ({ onCreateNew, onEdit, onView }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {filteredAsignaturas.map((asignatura) => (
                         <AsignaturaCard
-                            key={asignatura.id}
+                            key={asignatura.id || asignatura.codigo}
                             asignatura={asignatura}
-                            onEdit={() => onEdit(asignatura)}
-                            onView={() => onView(asignatura)}
+                            onEdit={() => handleEdit(asignatura)}
+                            onView={() => handleView(asignatura)}
                         />
                     ))}
                 </div>
             )}
         </div>
     );
+};
+
+// Definición de PropTypes
+AsignaturaList.propTypes = {
+    onCreateNew: PropTypes.func,
+    onEdit: PropTypes.func,
+    onView: PropTypes.func
+};
+
+// Valores por defecto
+AsignaturaList.defaultProps = {
+    onCreateNew: null,
+    onEdit: null,
+    onView: null
 };
 
 export default AsignaturaList;

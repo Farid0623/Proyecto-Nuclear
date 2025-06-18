@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { Edit, Eye, Clock, BookOpen, CheckCircle, XCircle } from 'lucide-react';
 import { clsx } from 'clsx';
@@ -8,9 +9,33 @@ import Button from '../common/Button';
 const AsignaturaCard = ({ asignatura, onEdit, onView }) => {
     const { t } = useTranslation();
 
-    const statusColor = asignatura.activa ? 'success' : 'danger';
-    const statusIcon = asignatura.activa ? CheckCircle : XCircle;
+    // Validaciones de props con valores por defecto
+    const asignaturaData = {
+        codigo: asignatura?.codigo || '',
+        nombre: asignatura?.nombre || '',
+        descripcion: asignatura?.descripcion || '',
+        creditos: asignatura?.creditos || 0,
+        horasTeoricas: asignatura?.horasTeoricas || 0,
+        horasPracticas: asignatura?.horasPracticas || 0,
+        activa: asignatura?.activa ?? false,
+        numeroSemestre: asignatura?.numeroSemestre || null,
+        prerrequisitos: asignatura?.prerrequisitos || []
+    };
+
+    const statusIcon = asignaturaData.activa ? CheckCircle : XCircle;
     const StatusIcon = statusIcon;
+
+    const handleEdit = () => {
+        if (onEdit && typeof onEdit === 'function') {
+            onEdit(asignatura);
+        }
+    };
+
+    const handleView = () => {
+        if (onView && typeof onView === 'function') {
+            onView(asignatura);
+        }
+    };
 
     return (
         <Card hover className="h-full">
@@ -19,29 +44,29 @@ const AsignaturaCard = ({ asignatura, onEdit, onView }) => {
                 <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-1">
-              <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                {asignatura.codigo}
-              </span>
+                            <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                {asignaturaData.codigo}
+                            </span>
                             <div className={clsx(
                                 'flex items-center space-x-1 text-xs px-2 py-1 rounded-full',
-                                asignatura.activa
+                                asignaturaData.activa
                                     ? 'text-success-700 bg-success-50'
                                     : 'text-danger-700 bg-danger-50'
                             )}>
                                 <StatusIcon className="h-3 w-3" />
                                 <span>
-                  {asignatura.activa ? t('common.labels.active') : t('common.labels.inactive')}
-                </span>
+                                    {asignaturaData.activa ? t('common.labels.active') : t('common.labels.inactive')}
+                                </span>
                             </div>
                         </div>
 
                         <h3 className="font-semibold text-gray-900 line-clamp-2 mb-2">
-                            {asignatura.nombre}
+                            {asignaturaData.nombre}
                         </h3>
 
-                        {asignatura.descripcion && (
+                        {asignaturaData.descripcion && (
                             <p className="text-sm text-gray-600 line-clamp-2 mb-3">
-                                {asignatura.descripcion}
+                                {asignaturaData.descripcion}
                             </p>
                         )}
                     </div>
@@ -54,7 +79,7 @@ const AsignaturaCard = ({ asignatura, onEdit, onView }) => {
                             <BookOpen className="h-4 w-4 text-primary-500" />
                             <div>
                                 <p className="text-xs text-gray-500">{t('common.labels.credits')}</p>
-                                <p className="text-sm font-medium">{asignatura.creditos}</p>
+                                <p className="text-sm font-medium">{asignaturaData.creditos}</p>
                             </div>
                         </div>
 
@@ -63,7 +88,7 @@ const AsignaturaCard = ({ asignatura, onEdit, onView }) => {
                             <div>
                                 <p className="text-xs text-gray-500">Horas</p>
                                 <p className="text-sm font-medium">
-                                    {(asignatura.horasTeoricas || 0) + (asignatura.horasPracticas || 0)}h
+                                    {asignaturaData.horasTeoricas + asignaturaData.horasPracticas}h
                                 </p>
                             </div>
                         </div>
@@ -74,21 +99,21 @@ const AsignaturaCard = ({ asignatura, onEdit, onView }) => {
                         <div className="grid grid-cols-2 gap-2 text-xs">
                             <div>
                                 <span className="text-gray-500">Teóricas:</span>
-                                <span className="ml-1 font-medium">{asignatura.horasTeoricas || 0}h</span>
+                                <span className="ml-1 font-medium">{asignaturaData.horasTeoricas}h</span>
                             </div>
                             <div>
                                 <span className="text-gray-500">Prácticas:</span>
-                                <span className="ml-1 font-medium">{asignatura.horasPracticas || 0}h</span>
+                                <span className="ml-1 font-medium">{asignaturaData.horasPracticas}h</span>
                             </div>
                         </div>
                     </div>
 
                     {/* Información adicional */}
-                    {asignatura.numeroSemestre && (
+                    {asignaturaData.numeroSemestre && (
                         <div className="flex items-center justify-between text-xs text-gray-500">
-                            <span>{t('common.labels.semester')} {asignatura.numeroSemestre}</span>
-                            {asignatura.prerrequisitos?.length > 0 && (
-                                <span>{asignatura.prerrequisitos.length} {t('common.labels.prerequisites')}</span>
+                            <span>{t('common.labels.semester')} {asignaturaData.numeroSemestre}</span>
+                            {asignaturaData.prerrequisitos.length > 0 && (
+                                <span>{asignaturaData.prerrequisitos.length} {t('common.labels.prerequisites')}</span>
                             )}
                         </div>
                     )}
@@ -99,8 +124,9 @@ const AsignaturaCard = ({ asignatura, onEdit, onView }) => {
                     <Button
                         variant="ghost"
                         size="sm"
-                        onClick={onView}
+                        onClick={handleView}
                         title={t('common.actions.view')}
+                        disabled={!onView}
                     >
                         <Eye className="h-4 w-4" />
                     </Button>
@@ -108,8 +134,9 @@ const AsignaturaCard = ({ asignatura, onEdit, onView }) => {
                     <Button
                         variant="ghost"
                         size="sm"
-                        onClick={onEdit}
+                        onClick={handleEdit}
                         title={t('common.actions.edit')}
+                        disabled={!onEdit}
                     >
                         <Edit className="h-4 w-4" />
                     </Button>
@@ -117,6 +144,34 @@ const AsignaturaCard = ({ asignatura, onEdit, onView }) => {
             </div>
         </Card>
     );
+};
+
+// Definición de PropTypes
+AsignaturaCard.propTypes = {
+    asignatura: PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        codigo: PropTypes.string,
+        nombre: PropTypes.string,
+        descripcion: PropTypes.string,
+        creditos: PropTypes.number,
+        horasTeoricas: PropTypes.number,
+        horasPracticas: PropTypes.number,
+        activa: PropTypes.bool,
+        numeroSemestre: PropTypes.number,
+        prerrequisitos: PropTypes.arrayOf(PropTypes.shape({
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+            codigo: PropTypes.string,
+            nombre: PropTypes.string
+        }))
+    }).isRequired,
+    onEdit: PropTypes.func,
+    onView: PropTypes.func
+};
+
+// Valores por defecto
+AsignaturaCard.defaultProps = {
+    onEdit: null,
+    onView: null
 };
 
 export default AsignaturaCard;

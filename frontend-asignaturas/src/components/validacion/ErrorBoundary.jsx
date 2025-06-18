@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 import Button from '../common/Button';
 import Card from '../common/Card';
@@ -23,7 +24,6 @@ class ErrorBoundary extends React.Component {
             errorInfo: errorInfo
         });
 
-        // Log error to monitoring service
         console.error('ErrorBoundary caught an error:', error, errorInfo);
     }
 
@@ -60,8 +60,8 @@ class ErrorBoundary extends React.Component {
                                 <br />
                                 <strong>Stack:</strong>
                                 <pre className="whitespace-pre-wrap text-xs mt-1">
-                  {this.state.errorInfo.componentStack}
-                </pre>
+                                    {this.state.errorInfo.componentStack}
+                                </pre>
                             </div>
                         )}
 
@@ -89,5 +89,9 @@ class ErrorBoundary extends React.Component {
         return this.props.children;
     }
 }
+
+ErrorBoundary.propTypes = {
+    children: PropTypes.node.isRequired
+};
 
 export default ErrorBoundary;

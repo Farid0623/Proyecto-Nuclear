@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import PropTypes from 'prop-types';
 
 const ThemeContext = createContext();
 
@@ -36,11 +37,12 @@ export const ThemeProvider = ({ children }) => {
         }
     };
 
-    const value = {
+    // Usar useMemo para evitar re-renders innecesarios
+    const value = useMemo(() => ({
         theme,
         toggleTheme,
         isDark: theme === 'dark'
-    };
+    }), [theme]);
 
     return (
         <ThemeContext.Provider value={value}>
@@ -48,3 +50,10 @@ export const ThemeProvider = ({ children }) => {
         </ThemeContext.Provider>
     );
 };
+
+// PropTypes para ThemeProvider
+ThemeProvider.propTypes = {
+    children: PropTypes.node.isRequired
+};
+
+export default ThemeContext;

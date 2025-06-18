@@ -1,37 +1,60 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Plus, Calendar, Clock, User, MapPin } from 'lucide-react';
+import { Plus, Clock } from 'lucide-react';
 import Card from '../common/Card';
 import Button from '../common/Button';
 import { DIAS_SEMANA, HORAS_ACADEMICAS } from '../../utils/constants';
 
-const HorarioGrid = ({ horarios = [], onAddHorario, onEditHorario, onDeleteHorario }) => {
+const HorarioGrid = ({ horarios = [], onAddHorario, onEditHorario }) => {
     const { t } = useTranslation();
     const [selectedWeek, setSelectedWeek] = useState('current');
 
     const timeSlots = HORAS_ACADEMICAS.slice(0, 12); // 6:00 AM a 6:00 PM
 
     const getHorarioForCell = (dia, hora) => {
-        return horarios.find(h =>
-            h.dia === dia &&
-            h.horaInicio <= hora &&
-            h.horaFin > hora
+        return (horarios || []).find(h =>
+            h?.dia === dia &&
+            h?.horaInicio <= hora &&
+            h?.horaFin > hora
         );
     };
 
     const renderHorarioCell = (horario) => {
         if (!horario) return null;
 
+        const handleClick = () => {
+            if (onEditHorario && typeof onEditHorario === 'function') {
+                onEditHorario(horario);
+            }
+        };
+
+        const handleKeyDown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleClick();
+            }
+        };
+
         return (
-            <div
-                className="p-2 bg-university-purple text-white rounded text-xs cursor-pointer hover:bg-university-purple-dark transition-colors"
-                onClick={() => onEditHorario && onEditHorario(horario)}
+            <button
+                type="button"
+                className="w-full p-2 bg-university-purple text-white rounded text-xs hover:bg-university-purple-dark transition-colors text-left"
+                onClick={handleClick}
+                onKeyDown={handleKeyDown}
+                aria-label={`Editar horario de ${horario?.asignatura?.nombre || 'asignatura'}`}
             >
-                <div className="font-medium truncate">{horario.asignatura?.nombre}</div>
-                <div className="opacity-80 truncate">{horario.aula}</div>
-                <div className="opacity-70">{horario.tipoClase}</div>
-            </div>
+                <div className="font-medium truncate">{horario?.asignatura?.nombre || 'Sin nombre'}</div>
+                <div className="opacity-80 truncate">{horario?.aula || 'Sin aula'}</div>
+                <div className="opacity-70">{horario?.tipoClase || 'Sin tipo'}</div>
+            </button>
         );
+    };
+
+    const handleAddHorario = () => {
+        if (onAddHorario && typeof onAddHorario === 'function') {
+            onAddHorario();
+        }
     };
 
     return (
@@ -58,7 +81,7 @@ const HorarioGrid = ({ horarios = [], onAddHorario, onEditHorario, onDeleteHorar
                         <option value="all">Ver Todo</option>
                     </select>
 
-                    <Button onClick={() => onAddHorario && onAddHorario()}>
+                    <Button onClick={handleAddHorario}>
                         <Plus className="h-4 w-4 mr-2" />
                         Nuevo Horario
                     </Button>
@@ -139,6 +162,31 @@ const HorarioGrid = ({ horarios = [], onAddHorario, onEditHorario, onDeleteHorar
             </Card>
         </div>
     );
+};
+
+// PropTypes
+HorarioGrid.propTypes = {
+    horarios: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        dia: PropTypes.string,
+        horaInicio: PropTypes.string,
+        horaFin: PropTypes.string,
+        aula: PropTypes.string,
+        tipoClase: PropTypes.string,
+        asignatura: PropTypes.shape({
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+            nombre: PropTypes.string,
+            codigo: PropTypes.string
+        })
+    })),
+    onAddHorario: PropTypes.func,
+    onEditHorario: PropTypes.func
+};
+
+HorarioGrid.defaultProps = {
+    horarios: [],
+    onAddHorario: null,
+    onEditHorario: null
 };
 
 export default HorarioGrid;

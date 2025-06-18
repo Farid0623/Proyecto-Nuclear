@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
-import { Save, X, Clock, MapPin, User } from 'lucide-react';
+import { Save, X, Clock, User } from 'lucide-react';
 import Modal from '../common/Modal';
 import Button from '../common/Button';
 import Input from '../common/Input';
@@ -18,33 +19,54 @@ const HorarioForm = ({
     const { t } = useTranslation();
     const { data: asignaturas } = useAsignaturasActivas();
 
+    const horarioData = horario ? {
+        asignaturaId: horario.asignaturaId || '',
+        dia: horario.dia || '',
+        horaInicio: horario.horaInicio || '',
+        horaFin: horario.horaFin || '',
+        aula: horario.aula || '',
+        tipoClase: horario.tipoClase || 'TEORICA',
+        profesorId: horario.profesorId || '',
+        capacidad: horario.capacidad || 30,
+        activo: horario.activo ?? true
+    } : {
+        asignaturaId: '',
+        dia: '',
+        horaInicio: '',
+        horaFin: '',
+        aula: '',
+        tipoClase: 'TEORICA',
+        profesorId: '',
+        capacidad: 30,
+        activo: true
+    };
+
     const {
         register,
         handleSubmit,
         watch,
         formState: { errors, isDirty }
     } = useForm({
-        defaultValues: {
-            asignaturaId: horario?.asignaturaId || '',
-            dia: horario?.dia || '',
-            horaInicio: horario?.horaInicio || '',
-            horaFin: horario?.horaFin || '',
-            aula: horario?.aula || '',
-            tipoClase: horario?.tipoClase || 'TEORICA',
-            profesorId: horario?.profesorId || '',
-            capacidad: horario?.capacidad || 30,
-            activo: horario?.activo ?? true
-        }
+        defaultValues: horarioData
     });
 
     const watchHoraInicio = watch('horaInicio');
 
-    const onSubmit = (data) => {
+    const handleFormSubmit = (data) => {
         // Validar que hora fin sea posterior a hora inicio
         if (data.horaFin <= data.horaInicio) {
             return;
         }
-        onSave(data);
+
+        if (onSave && typeof onSave === 'function') {
+            onSave(data);
+        }
+    };
+
+    const handleClose = () => {
+        if (onClose && typeof onClose === 'function') {
+            onClose();
+        }
     };
 
     // Filtrar horas de fin disponibles
@@ -58,11 +80,11 @@ const HorarioForm = ({
     return (
         <Modal
             isOpen={true}
-            onClose={onClose}
+            onClose={handleClose}
             title={horario ? t('schedules.editSchedule') : t('schedules.createSchedule')}
             size="lg"
         >
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
                 {/* Información básica */}
                 <div>
                     <h3 className="text-lg font-medium text-gray-900 mb-4">
@@ -79,7 +101,7 @@ const HorarioForm = ({
                             error={errors.asignaturaId?.message}
                         >
                             <option value="">Seleccionar asignatura</option>
-                            {asignaturas?.map(asignatura => (
+                            {(asignaturas || []).map(asignatura => (
                                 <option key={asignatura.id} value={asignatura.id}>
                                     {asignatura.codigo} - {asignatura.nombre}
                                 </option>
@@ -215,7 +237,7 @@ const HorarioForm = ({
                     <Button
                         type="button"
                         variant="outline"
-                        onClick={onClose}
+                        onClick={handleClose}
                         disabled={isLoading}
                     >
                         <X className="h-4 w-4 mr-2" />
@@ -235,6 +257,29 @@ const HorarioForm = ({
             </form>
         </Modal>
     );
+};
+
+HorarioForm.propTypes = {
+    horario: PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        asignaturaId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        dia: PropTypes.string,
+        horaInicio: PropTypes.string,
+        horaFin: PropTypes.string,
+        aula: PropTypes.string,
+        tipoClase: PropTypes.string,
+        profesorId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        capacidad: PropTypes.number,
+        activo: PropTypes.bool
+    }),
+    onClose: PropTypes.func.isRequired,
+    onSave: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool
+};
+
+HorarioForm.defaultProps = {
+    horario: null,
+    isLoading: false
 };
 
 export default HorarioForm;
