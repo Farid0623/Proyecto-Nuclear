@@ -411,6 +411,13 @@ export const AppProvider = ({ children }) => {
         </AppContext.Provider>
     );
 };
+const initialUser = JSON.parse(localStorage.getItem('currentUser')) || {
+    id: null,
+    nombre: '',
+    email: '',
+    rol: '',
+    isAuthenticated: false,
+};
 
 AppProvider.propTypes = {
     children: PropTypes.node.isRequired
