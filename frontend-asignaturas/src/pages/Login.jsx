@@ -17,12 +17,18 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [redirecting, setRedirecting] = useState(false);
 
-    const from = location.state?.from?.pathname || '/dashboard';
+    const from = location.state?.from?.pathname || '/';
 
+    // Verificar autenticación y redirigir
     useEffect(() => {
+        console.log('🔍 Login useEffect - Auth status:', user.isAuthenticated);
         if (user.isAuthenticated && !redirecting) {
+            console.log('👤 User authenticated, preparing redirect to:', from);
             setRedirecting(true);
+
+            // Usar setTimeout para asegurar que el estado se actualice
             setTimeout(() => {
+                console.log('🚀 Executing redirect to:', from);
                 navigate(from, { replace: true });
             }, 100);
         }
@@ -40,30 +46,54 @@ const Login = () => {
     });
 
     const doLogin = async (userData) => {
+        console.log('🔐 Executing login with user:', userData);
+
+        // Crear tokens mock
         const mockToken = 'token-' + Date.now();
         const mockRefreshToken = 'refresh-' + Date.now();
 
+        // Guardar en localStorage PRIMERO
         localStorage.setItem('authToken', mockToken);
         localStorage.setItem('refreshToken', mockRefreshToken);
-        // GUARDAR COMO currentUser Y CON isAuthenticated: true!
-        localStorage.setItem('currentUser', JSON.stringify({ ...userData, isAuthenticated: true }));
+        localStorage.setItem('userData', JSON.stringify(userData));
 
-        actions.setUser({ ...userData, isAuthenticated: true });
+        console.log('💾 Tokens saved:', { mockToken, mockRefreshToken });
+
+        // Actualizar contexto
+        actions.setUser(userData);
+
+        // Toast de éxito
         toast.success(`¡Bienvenido ${userData.nombre}!`);
+
+        console.log('✅ Login process completed, redirecting...');
+
+        // Forzar redirección después del login
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 1000);
     };
 
     const onSubmit = async (data) => {
         setIsLoading(true);
+        console.log('🚀 Login attempt with:', data.email);
+
         try {
+            // Simular delay de login
             await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Datos del usuario mock
             const userData = {
                 id: 1,
                 nombre: 'Administrador Demo',
                 email: data.email,
                 rol: 'administrador'
             };
+
+            // Ejecutar login
             await doLogin(userData);
+
         } catch (error) {
+            console.error('❌ Login error:', error);
             toast.error('Error en el login');
         } finally {
             setIsLoading(false);
@@ -71,20 +101,24 @@ const Login = () => {
     };
 
     const handleQuickLogin = async () => {
+        console.log('⚡ Quick login triggered');
         setIsLoading(true);
+
         const userData = {
             id: 1,
             nombre: 'Usuario Rápido',
             email: 'admin@cue.edu.co',
             rol: 'administrador'
         };
+
         await doLogin(userData);
         setIsLoading(false);
     };
 
+    // Si está redirigiendo, mostrar loading
     if (redirecting) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-primary-600 to-secondary-500 flex items-center justify-center p-4">
+            <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-red-600 flex items-center justify-center p-4">
                 <Card className="p-8 text-center">
                     <LoadingSpinner size="lg" className="mx-auto mb-4" />
                     <h2 className="text-xl font-semibold text-gray-900 mb-2">
@@ -99,9 +133,9 @@ const Login = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary-600 to-secondary-500 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-red-600 flex items-center justify-center p-4">
             <div className="w-full max-w-md">
-                {/* Debug Info */}
+                {/* Debug Info - Solo visible en desarrollo */}
                 {process.env.NODE_ENV === 'development' && (
                     <div className="mb-4 p-3 bg-black text-white text-xs rounded">
                         <div>🔧 DEBUG:</div>
@@ -116,7 +150,7 @@ const Login = () => {
                 {/* Header */}
                 <div className="text-center mb-8">
                     <div className="w-16 h-16 mx-auto mb-4 bg-white rounded-lg flex items-center justify-center shadow-lg">
-                        <span className="text-primary-600 font-bold text-2xl">AH</span>
+                        <span className="text-blue-600 font-bold text-2xl">AH</span>
                     </div>
                     <h1 className="text-3xl font-bold text-white mb-2 drop-shadow-lg">
                         Sistema de Gestión
@@ -172,7 +206,7 @@ const Login = () => {
 
                         <Button
                             type="submit"
-                            className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-4 rounded-lg shadow-lg transform transition hover:scale-105"
+                            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-lg shadow-lg transform transition hover:scale-105"
                             loading={isLoading}
                             disabled={isLoading}
                         >
@@ -194,14 +228,14 @@ const Login = () => {
                             type="button"
                             onClick={handleQuickLogin}
                             disabled={isLoading}
-                            className="w-full bg-secondary-500 hover:bg-secondary-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg transform transition hover:scale-105"
+                            className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg transform transition hover:scale-105"
                         >
                             ⚡ Acceso Rápido (Demo)
                         </Button>
                     </form>
 
-                    <div className="mt-6 p-4 bg-primary-50 rounded-lg border border-primary-200">
-                        <div className="text-sm text-primary-800">
+                    <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+                        <div className="text-sm text-blue-800">
                             <strong>Credenciales de Prueba:</strong><br />
                             📧 Email: admin@cue.edu.co<br />
                             🔑 Password: admin123
