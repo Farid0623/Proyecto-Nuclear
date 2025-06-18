@@ -21,14 +21,10 @@ const Login = () => {
 
     // Verificar autenticación y redirigir
     useEffect(() => {
-        console.log('🔍 Login useEffect - Auth status:', user.isAuthenticated);
         if (user.isAuthenticated && !redirecting) {
-            console.log('👤 User authenticated, preparing redirect to:', from);
             setRedirecting(true);
-
-            // Usar setTimeout para asegurar que el estado se actualice
+            // Redirección controlada por React Router
             setTimeout(() => {
-                console.log('🚀 Executing redirect to:', from);
                 navigate(from, { replace: true });
             }, 100);
         }
@@ -46,37 +42,24 @@ const Login = () => {
     });
 
     const doLogin = async (userData) => {
-        console.log('🔐 Executing login with user:', userData);
-
         // Crear tokens mock
         const mockToken = 'token-' + Date.now();
         const mockRefreshToken = 'refresh-' + Date.now();
 
-        // Guardar en localStorage PRIMERO
+        // Guardar en localStorage primero
         localStorage.setItem('authToken', mockToken);
         localStorage.setItem('refreshToken', mockRefreshToken);
         localStorage.setItem('userData', JSON.stringify(userData));
 
-        console.log('💾 Tokens saved:', { mockToken, mockRefreshToken });
+        // Actualizar contexto - importante: isAuthenticated: true
+        actions.setUser({ ...userData, isAuthenticated: true });
 
-        // Actualizar contexto
-        actions.setUser(userData);
-
-        // Toast de éxito
         toast.success(`¡Bienvenido ${userData.nombre}!`);
-
-        console.log('✅ Login process completed, redirecting...');
-
-        // Forzar redirección después del login
-        setTimeout(() => {
-            window.location.href = '/';
-        }, 1000);
+        // No recargues la página, deja que el useEffect haga la redirección
     };
 
     const onSubmit = async (data) => {
         setIsLoading(true);
-        console.log('🚀 Login attempt with:', data.email);
-
         try {
             // Simular delay de login
             await new Promise(resolve => setTimeout(resolve, 1000));
@@ -91,9 +74,7 @@ const Login = () => {
 
             // Ejecutar login
             await doLogin(userData);
-
         } catch (error) {
-            console.error('❌ Login error:', error);
             toast.error('Error en el login');
         } finally {
             setIsLoading(false);
@@ -101,16 +82,13 @@ const Login = () => {
     };
 
     const handleQuickLogin = async () => {
-        console.log('⚡ Quick login triggered');
         setIsLoading(true);
-
         const userData = {
             id: 1,
             nombre: 'Usuario Rápido',
             email: 'admin@cue.edu.co',
             rol: 'administrador'
         };
-
         await doLogin(userData);
         setIsLoading(false);
     };
