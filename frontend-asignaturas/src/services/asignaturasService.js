@@ -149,7 +149,7 @@ export const asignaturasService = {
         }
     },
 
-    // Verificar si existe código
+    // Verificar si existe código - CORREGIDO: Se mantiene excludeId porque se usa
     checkCodeExists: async (codigo, excludeId = null) => {
         try {
             const filters = { codigo };
@@ -159,6 +159,7 @@ export const asignaturasService = {
             const asignaturas = await asignaturasService.getAll(filters);
             return asignaturas.length > 0;
         } catch (error) {
+            console.error('Error checking code existence:', error);
             return false;
         }
     },

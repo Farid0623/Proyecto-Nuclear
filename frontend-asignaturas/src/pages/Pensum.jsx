@@ -1,33 +1,18 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Card from '../components/common/Card';
+import { Routes, Route } from 'react-router-dom';
+import PensumView from '../components/pensum/PensumView';
 
 const Pensum = () => {
     const { t } = useTranslation();
 
     return (
-        <div className="space-y-6">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                    {t('curriculum.title')}
-                </h1>
-                <p className="text-gray-600">
-                    {t('curriculum.subtitle')}
-                </p>
-            </div>
-
-            <Card>
-                <Card.Content>
-                    <div className="text-center py-12">
-                        <p className="text-gray-500 mb-4">
-                            Módulo de Pensum en desarrollo
-                        </p>
-                        <p className="text-sm text-gray-400">
-                            Esta funcionalidad estará disponible próximamente
-                        </p>
-                    </div>
-                </Card.Content>
-            </Card>
+        <div className="min-h-screen bg-gray-50">
+            <Routes>
+                <Route index element={<PensumView />} />
+                <Route path="crear" element={<div>Crear plan de estudios</div>} />
+                <Route path=":id/editar" element={<div>Editar plan de estudios</div>} />
+            </Routes>
         </div>
     );
 };

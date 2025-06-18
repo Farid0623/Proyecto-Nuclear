@@ -53,7 +53,7 @@ const Modal = ({
 
     const modalContent = (
         <div className="fixed inset-0 z-50 overflow-y-auto">
-            {/* Backdrop - ahora es un div simple sin interacciones */}
+            {/* Backdrop */}
             <div
                 className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
                 onClick={handleBackdropClick}
@@ -62,15 +62,14 @@ const Modal = ({
 
             {/* Modal container */}
             <div className="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
-                <div
+                <dialog
+                    open={isOpen}
                     className={clsx(
                         'relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all w-full',
                         sizeClasses[size],
                         'animate-scale-in',
                         className
                     )}
-                    role="dialog"
-                    aria-modal="true"
                     aria-labelledby={title ? 'modal-title' : undefined}
                 >
                     {/* Header */}
@@ -107,7 +106,7 @@ const Modal = ({
                             {footer}
                         </div>
                     )}
-                </div>
+                </dialog>
             </div>
         </div>
     );

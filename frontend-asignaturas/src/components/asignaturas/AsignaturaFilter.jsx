@@ -34,6 +34,10 @@ const AsignaturaFilter = ({ filters, onFiltersChange }) => {
         handleFilterChange('credits', e.target.value);
     };
 
+    // CORREGIDO: Agregadas keys únicas para evitar usar array index
+    const semesterOptions = [1,2,3,4,5,6,7,8,9,10];
+    const creditOptions = [1,2,3,4,5,6,7,8,9,10];
+
     return (
         <div className="flex flex-wrap gap-4">
             <div className="w-full sm:w-auto min-w-[150px]">
@@ -55,8 +59,8 @@ const AsignaturaFilter = ({ filters, onFiltersChange }) => {
                     aria-label="Filtrar por semestre"
                 >
                     <option value="">{t('subjects.filters.bySemester')}</option>
-                    {[1,2,3,4,5,6,7,8,9,10].map(sem => (
-                        <option key={sem} value={sem}>
+                    {semesterOptions.map(sem => (
+                        <option key={`semester-${sem}`} value={sem}>
                             {t('common.labels.semester')} {sem}
                         </option>
                     ))}
@@ -70,8 +74,8 @@ const AsignaturaFilter = ({ filters, onFiltersChange }) => {
                     aria-label="Filtrar por créditos"
                 >
                     <option value="">{t('subjects.filters.byCredits')}</option>
-                    {[1,2,3,4,5,6,7,8,9,10].map(cred => (
-                        <option key={cred} value={cred}>
+                    {creditOptions.map(cred => (
+                        <option key={`credits-${cred}`} value={cred}>
                             {cred} {t('common.labels.credits')}
                         </option>
                     ))}
