@@ -9,15 +9,41 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Repositorio para operaciones CRUD de PlanEstudios en MongoDB
+ * Repository para gestión de planes de estudios en MongoDB
  */
 @Repository
 public interface PlanEstudiosRepository extends MongoRepository<PlanEstudios, String> {
 
     /**
-     * Busca un plan de estudios por su código único
+     * Busca un plan de estudios por código
      */
     Optional<PlanEstudios> findByCodigo(String codigo);
+
+    /**
+     * Busca planes de estudios por nombre (búsqueda parcial, case-insensitive)
+     */
+    @Query("{'nombre': {$regex: ?0, $options: 'i'}}")
+    List<PlanEstudios> findByNombreContainingIgnoreCase(String nombre);
+
+    /**
+     * Obtiene planes activos
+     */
+    List<PlanEstudios> findByActivoTrue();
+
+    /**
+     * Obtiene planes por facultad
+     */
+    List<PlanEstudios> findByFacultad(String facultad);
+
+    /**
+     * Obtiene planes por programa
+     */
+    List<PlanEstudios> findByPrograma(String programa);
+
+    /**
+     * Obtiene planes por duración de semestres
+     */
+    List<PlanEstudios> findByDuracionSemestres(Integer duracion);
 
     /**
      * Verifica si existe un plan con el código dado
@@ -25,59 +51,29 @@ public interface PlanEstudiosRepository extends MongoRepository<PlanEstudios, St
     boolean existsByCodigo(String codigo);
 
     /**
-     * Busca planes por nombre (búsqueda parcial, case-insensitive)
+     * Verifica si existe un plan con el nombre dado
      */
-    @Query("{'nombre': {$regex: ?0, $options: 'i'}}")
-    List<PlanEstudios> findByNombreContainingIgnoreCase(String nombre);
+    boolean existsByNombre(String nombre);
 
     /**
-     * Busca planes por facultad
+     * Obtiene planes por facultad y que estén activos
      */
-    List<PlanEstudios> findByFacultad(String facultad);
+    List<PlanEstudios> findByFacultadAndActivoTrue(String facultad);
 
     /**
-     * Busca planes por programa
+     * Busca planes por rango de duración de semestres
      */
-    List<PlanEstudios> findByPrograma(String programa);
+    List<PlanEstudios> findByDuracionSemestresBetween(Integer minDuracion, Integer maxDuracion);
 
     /**
-     * Busca planes activos
+     * Cuenta planes activos por facultad
      */
-    List<PlanEstudios> findByActivoTrue();
+    @Query(value = "{'facultad': ?0, 'activo': true}", count = true)
+    long countByFacultadAndActivoTrue(String facultad);
 
     /**
-     * Busca planes por duración en semestres
+     * Obtiene estadísticas básicas de planes
      */
-    List<PlanEstudios> findByDuracionSemestres(Integer duracion);
-
-    /**
-     * Busca planes por rango de duración
-     */
-    @Query("{'duracionSemestres': {$gte: ?0, $lte: ?1}}")
-    List<PlanEstudios> findByDuracionSemestresBetween(Integer duracionMin, Integer duracionMax);
-
-    /**
-     * Busca planes por facultad y programa
-     */
-    List<PlanEstudios> findByFacultadAndPrograma(String facultad, String programa);
-
-    /**
-     * Cuenta planes activos
-     */
-    @Query(value = "{'activo': true}", count = true)
-    long countPlanesActivos();
-
-    /**
-     * Obtiene todos los planes ordenados por nombre
-     */
-    List<PlanEstudios> findAllByOrderByNombre();
-
-    /**
-     * Busca planes que contengan texto en nombre o descripción
-     */
-    @Query("{ $or: [ " +
-            "{'nombre': {$regex: ?0, $options: 'i'}}, " +
-            "{'descripcion': {$regex: ?0, $options: 'i'}} " +
-            "] }")
-    List<PlanEstudios> buscarPorTexto(String texto);
+    @Query(value = "{}", fields = "{'codigo': 1, 'nombre': 1, 'duracionSemestres': 1, 'activo': 1}")
+    List<PlanEstudios> findAllBasicInfo();
 }

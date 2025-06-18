@@ -48,7 +48,7 @@ public class Semestre implements ComponentePlan {
     // Referencias a asignaturas del semestre
     @DBRef
     @Builder.Default
-    @NotEmpty(message = "Un semestre debe tener al menos una asignatura")
+    //@NotEmpty(message = "Un semestre debe tener al menos una asignatura")
     private List<Asignatura> asignaturas = new ArrayList<>();
 
     // Referencia al plan de estudios padre
@@ -75,8 +75,14 @@ public class Semestre implements ComponentePlan {
     /**
      * Valida que el semestre tenga asignaturas
      * OCL: inv tieneAsignaturas: self.asignatura->notEmpty()
+     * Validación condicional: permite crear semestres vacíos, pero los existentes deben tener asignaturas
      */
     public boolean validarTieneAsignaturas() {
+        // Si es un semestre nuevo (sin ID), puede estar vacío
+        if (this.id == null) {
+            return true;
+        }
+        // Si ya existe en la base de datos, debe tener al menos una asignatura
         return asignaturas != null && !asignaturas.isEmpty();
     }
 
@@ -84,9 +90,17 @@ public class Semestre implements ComponentePlan {
      * Valida que los créditos por semestre estén en rango válido
      * OCL: inv creditosPorSemestreValidos:
      *      self.asignatura->sum(a | a.creditos) >= 12 and <= 20
+     * Validación condicional: permite 0 créditos para semestres nuevos
      */
     public boolean validarCreditosPorSemestreValidos() {
         int creditosTotales = calcularCreditos();
+
+        // Si es un semestre nuevo (sin ID) o no tiene asignaturas, permitir 0 créditos
+        if (this.id == null || asignaturas == null || asignaturas.isEmpty()) {
+            return true;
+        }
+
+        // Para semestres existentes con asignaturas, validar rango normal
         return creditosTotales >= 12 && creditosTotales <= 20;
     }
 

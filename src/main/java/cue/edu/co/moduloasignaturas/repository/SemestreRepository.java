@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Repositorio para operaciones CRUD de Semestre en MongoDB
+ * Repository para gestión de semestres en MongoDB
  */
 @Repository
 public interface SemestreRepository extends MongoRepository<Semestre, String> {
@@ -25,9 +25,9 @@ public interface SemestreRepository extends MongoRepository<Semestre, String> {
     List<Semestre> findByPlanEstudiosId(String planEstudiosId);
 
     /**
-     * Busca un semestre específico por plan y número
+     * Busca un semestre específico por número y plan de estudios
      */
-    Optional<Semestre> findByPlanEstudiosIdAndNumero(String planEstudiosId, Integer numero);
+    Optional<Semestre> findByNumeroAndPlanEstudiosId(Integer numero, String planEstudiosId);
 
     /**
      * Busca semestres por nombre (búsqueda parcial, case-insensitive)
@@ -36,9 +36,25 @@ public interface SemestreRepository extends MongoRepository<Semestre, String> {
     List<Semestre> findByNombreContainingIgnoreCase(String nombre);
 
     /**
-     * Busca semestres ordenados por número
+     * Busca semestres que contengan una asignatura específica
+     */
+    @Query("{'asignaturas.$id': ?0}")
+    List<Semestre> findByAsignaturasContaining(String asignaturaId);
+
+    /**
+     * Obtiene semestres ordenados por número
      */
     List<Semestre> findByPlanEstudiosIdOrderByNumero(String planEstudiosId);
+
+    /**
+     * Busca semestres por rango de números
+     */
+    List<Semestre> findByNumeroBetween(Integer numeroMin, Integer numeroMax);
+
+    /**
+     * Verifica si existe un semestre con el número dado en un plan específico
+     */
+    boolean existsByNumeroAndPlanEstudiosId(Integer numero, String planEstudiosId);
 
     /**
      * Cuenta semestres por plan de estudios
@@ -46,18 +62,13 @@ public interface SemestreRepository extends MongoRepository<Semestre, String> {
     long countByPlanEstudiosId(String planEstudiosId);
 
     /**
-     * Busca semestres que tengan un rango específico de créditos
+     * Obtiene semestres con créditos en un rango específico
+     * Nota: Esta consulta se implementa mejor en el Service usando lógica de aplicación
      */
-    @Query("{ 'asignaturas': { $exists: true, $not: { $size: 0 } } }")
-    List<Semestre> findSemestresConAsignaturas();
+    // Removido - se implementa en el service
 
     /**
-     * Busca el último semestre de un plan (mayor número)
+     * Elimina todos los semestres de un plan de estudios
      */
-    Optional<Semestre> findTopByPlanEstudiosIdOrderByNumeroDesc(String planEstudiosId);
-
-    /**
-     * Verifica si existe un semestre con número específico en un plan
-     */
-    boolean existsByPlanEstudiosIdAndNumero(String planEstudiosId, Integer numero);
+    void deleteByPlanEstudiosId(String planEstudiosId);
 }

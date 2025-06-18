@@ -62,7 +62,6 @@ public class PlanEstudios implements ComponentePlan {
     // Referencias a semestres del plan
     @DBRef
     @Builder.Default
-    @NotEmpty(message = "Un plan de estudios debe tener al menos un semestre")
     private List<Semestre> semestres = new ArrayList<>();
 
     @CreatedDate
@@ -86,8 +85,14 @@ public class PlanEstudios implements ComponentePlan {
     /**
      * Valida que el plan tenga semestres
      * OCL: inv tieneSemestres: self.semestre->notEmpty()
+     * Validación condicional: permite crear planes vacíos, pero los existentes deben tener semestres
      */
     public boolean validarTieneSemestres() {
+        // Si es un plan nuevo (sin ID), puede estar vacío para facilitar la creación
+        if (this.id == null) {
+            return true;
+        }
+        // Si ya existe en la base de datos, debe tener al menos un semestre
         return semestres != null && !semestres.isEmpty();
     }
 
@@ -113,10 +118,18 @@ public class PlanEstudios implements ComponentePlan {
      * Valida que los créditos totales no excedan el máximo
      * OCL: inv creditosTotalesValidos:
      *      self.semestre->collect(s | s.asignatura)->flatten()->sum(a | a.creditos) <= 200
+     * Validación condicional: permite 0 créditos para planes nuevos
      */
     public boolean validarCreditosTotalesValidos() {
         int creditosTotales = calcularCreditos();
-        return creditosTotales <= 200;
+
+        // Si es un plan nuevo (sin ID) o no tiene semestres, permitir 0 créditos
+        if (this.id == null || semestres == null || semestres.isEmpty()) {
+            return creditosTotales <= 200;
+        }
+
+        // Para planes existentes con semestres, validar rango normal
+        return creditosTotales > 0 && creditosTotales <= 200;
     }
 
     /**
@@ -246,9 +259,15 @@ public class PlanEstudios implements ComponentePlan {
     /**
      * Valida que los prerrequisitos estén en el mismo plan
      * OCL: prerequisitosEnMismoPlan
+     * Validación condicional: solo valida si tiene asignaturas
      */
     public boolean validarPrerequisitosEnMismoPlan() {
         List<Asignatura> todasLasAsignaturas = obtenerTodasLasAsignaturas();
+
+        // Si no tiene asignaturas aún, es válido
+        if (todasLasAsignaturas.isEmpty()) {
+            return true;
+        }
 
         return todasLasAsignaturas.stream().allMatch(asignatura ->
                 asignatura.obtenerPrerrequisitos().stream()
@@ -259,8 +278,14 @@ public class PlanEstudios implements ComponentePlan {
     /**
      * Valida que asignaturas con prerrequisitos no estén en primer semestre
      * OCL: prerrequisitosNoEnPrimerSemestre
+     * Validación condicional: solo valida si tiene semestres
      */
     public boolean validarPrerequisitosNoEnPrimerSemestre() {
+        // Si no tiene semestres aún, es válido
+        if (semestres == null || semestres.isEmpty()) {
+            return true;
+        }
+
         return semestres.stream()
                 .filter(s -> s.getNumero() != null && s.getNumero() == 1)
                 .flatMap(s -> s.getAsignaturas().stream())
