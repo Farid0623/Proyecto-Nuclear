@@ -1,42 +1,32 @@
 package cue.edu.co.moduloasignaturas.controller;
 
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
-@RequestMapping("/api/test")
+@RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TestController {
 
-    @GetMapping("/all")
-    public String allAccess() {
-        return "Contenido público.";
+    @GetMapping("/test")
+    public ResponseEntity<Map<String, String>> test() {
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "Backend conectado correctamente");
+        response.put("timestamp", LocalDateTime.now().toString());
+
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/alumno")
-    @PreAuthorize("hasRole('ALUMNO')")
-    public String alumnoAccess() {
-        return "Panel de Alumno.";
-    }
-
-    @GetMapping("/profesor")
-    @PreAuthorize("hasRole('PROFESOR') or hasRole('COORDINADOR') or hasRole('ADMINISTRADOR')")
-    public String profesorAccess() {
-        return "Panel de Profesor.";
-    }
-
-    @GetMapping("/coordinador")
-    @PreAuthorize("hasRole('COORDINADOR') or hasRole('ADMINISTRADOR')")
-    public String coordinadorAccess() {
-        return "Panel de Coordinador.";
-    }
-
-    @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
-    public String adminAccess() {
-        return "Panel de Administrador.";
+    @GetMapping("/public/health")
+    public ResponseEntity<String> health() {
+        return ResponseEntity.ok("API is running");
     }
 }

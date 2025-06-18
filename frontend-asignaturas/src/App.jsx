@@ -12,6 +12,7 @@ import { ThemeProvider } from './context/ThemeContext';
 
 // Componentes principales
 import Layout from './components/common/Layout';
+import ProtectedRoute from './components/common/ProtectedRoute';
 import LoadingSpinner from './components/common/LoadingSpinner';
 import ErrorBoundary from './components/validacion/ErrorBoundary';
 
@@ -21,6 +22,7 @@ const Asignaturas = React.lazy(() => import('./pages/Asignaturas'));
 const Pensum = React.lazy(() => import('./pages/Pensum'));
 const Horarios = React.lazy(() => import('./pages/Horarios'));
 const Configuracion = React.lazy(() => import('./pages/Configuracion'));
+const Login = React.lazy(() => import('./pages/Login'));
 
 // Configuración de React Query
 const queryClient = new QueryClient({
@@ -55,29 +57,39 @@ function App() {
                         <DndProvider backend={HTML5Backend}>
                             <Router>
                                 <div className="App min-h-screen bg-gray-50">
-                                    <Layout>
-                                        <Suspense fallback={<SuspenseLoader />}>
-                                            <Routes>
-                                                {/* Ruta principal - Dashboard */}
-                                                <Route path="/" element={<Dashboard />} />
+                                    <Suspense fallback={<SuspenseLoader />}>
+                                        <Routes>
+                                            {/* Ruta de login */}
+                                            <Route path="/login" element={<Login />} />
 
-                                                {/* Módulo de Asignaturas */}
-                                                <Route path="/asignaturas/*" element={<Asignaturas />} />
+                                            {/* Rutas protegidas */}
+                                            <Route path="/*" element={
+                                                <ProtectedRoute>
+                                                    <Layout>
+                                                        <Routes>
+                                                            {/* Ruta principal - Dashboard */}
+                                                            <Route path="/" element={<Dashboard />} />
 
-                                                {/* Módulo de Pensum */}
-                                                <Route path="/pensum/*" element={<Pensum />} />
+                                                            {/* Módulo de Asignaturas */}
+                                                            <Route path="/asignaturas/*" element={<Asignaturas />} />
 
-                                                {/* Módulo de Horarios */}
-                                                <Route path="/horarios/*" element={<Horarios />} />
+                                                            {/* Módulo de Pensum */}
+                                                            <Route path="/pensum/*" element={<Pensum />} />
 
-                                                {/* Configuración */}
-                                                <Route path="/configuracion" element={<Configuracion />} />
+                                                            {/* Módulo de Horarios */}
+                                                            <Route path="/horarios/*" element={<Horarios />} />
 
-                                                {/* Redirección para rutas no encontradas */}
-                                                <Route path="*" element={<Navigate to="/" replace />} />
-                                            </Routes>
-                                        </Suspense>
-                                    </Layout>
+                                                            {/* Configuración */}
+                                                            <Route path="/configuracion" element={<Configuracion />} />
+
+                                                            {/* Redirección para rutas no encontradas */}
+                                                            <Route path="*" element={<Navigate to="/" replace />} />
+                                                        </Routes>
+                                                    </Layout>
+                                                </ProtectedRoute>
+                                            } />
+                                        </Routes>
+                                    </Suspense>
 
                                     {/* Notificaciones Toast */}
                                     <Toaster

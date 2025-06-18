@@ -1,6 +1,6 @@
-// src/services/api.js - Versión corregida
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import mockBackendService from './mockBackendService';
 
 // Configuración de la API
 const API_CONFIG = {
@@ -8,7 +8,11 @@ const API_CONFIG = {
     timeout: 15000,
     retries: 3,
     retryDelay: 1000,
+    useMockFallback: process.env.NODE_ENV === 'development', // Usar mock en desarrollo si no hay backend
 };
+
+// Variable para controlar si se debe usar el mock
+let useMockService = false;
 
 // Crear instancia principal de axios
 const api = axios.create({
@@ -33,9 +37,32 @@ const processQueue = (error, token = null) => {
             resolve(token);
         }
     });
-
     failedQueue = [];
 };
+
+// Función para verificar si el backend está disponible
+const checkBackendAvailability = async () => {
+    try {
+        await axios.get(`${API_CONFIG.baseURL}/health`, { timeout: 5000 });
+        return true;
+    } catch (error) {
+        console.warn('⚠️ Backend no disponible, usando servicio mock');
+        return false;
+    }
+};
+
+// Inicializar verificación de backend
+if (API_CONFIG.useMockFallback) {
+    checkBackendAvailability().then(isAvailable => {
+        useMockService = !isAvailable;
+        if (useMockService) {
+            toast.success('🔧 Modo desarrollo: Usando datos mock', {
+                duration: 3000,
+                style: { background: '#3b82f6', color: 'white' }
+            });
+        }
+    });
+}
 
 // Interceptor para requests - Agregar autenticación
 api.interceptors.request.use(
@@ -78,85 +105,155 @@ api.interceptors.response.use(
         if (process.env.NODE_ENV === 'development') {
             console.log(`✅ API Response: ${response.status} ${response.config.url}`, response.data);
         }
-
         return response;
     },
     async (error) => {
         const originalRequest = error.config;
 
-        // Error de red
-        if (!error.response) {
-            console.error('❌ Network Error:', error.message);
-            toast.error('Error de conexión. Verifica tu internet.');
-            return Promise.reject(error);
+        // Si no hay respuesta, probablemente no hay backend
+        if (!error.response && API_CONFIG.useMockFallback) {
+            console.warn('⚠️ No response from backend, switching to mock service');
+            useMockService = true;
+
+            // Reintentar con mock service
+            return handleMockRequest(originalRequest);
         }
 
-        const { status, data } = error.response;
+        // Si hay respuesta, manejar normalmente
+        if (error.response) {
+            const { status, data } = error.response;
 
-        // Manejo de token expirado (401)
-        if (status === 401 && !originalRequest._retry) {
-            if (isRefreshing) {
-                // Si ya se está refrescando, agregar a la cola
-                return new Promise((resolve, reject) => {
-                    failedQueue.push({ resolve, reject });
-                }).then((token) => {
-                    originalRequest.headers.Authorization = `Bearer ${token}`;
-                    return api(originalRequest);
-                }).catch((err) => {
-                    return Promise.reject(err);
-                });
-            }
-
-            originalRequest._retry = true;
-            isRefreshing = true;
-
-            try {
-                const refreshToken = localStorage.getItem('refreshToken');
-                if (refreshToken) {
-                    const response = await api.post('/auth/refresh', {
-                        refreshToken
+            // Manejo de token expirado (401)
+            if (status === 401 && !originalRequest._retry) {
+                if (isRefreshing) {
+                    return new Promise((resolve, reject) => {
+                        failedQueue.push({ resolve, reject });
+                    }).then((token) => {
+                        originalRequest.headers.Authorization = `Bearer ${token}`;
+                        return api(originalRequest);
+                    }).catch((err) => {
+                        return Promise.reject(err);
                     });
-
-                    const { accessToken } = response.data;
-                    localStorage.setItem('authToken', accessToken);
-
-                    processQueue(null, accessToken);
-
-                    originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-                    return api(originalRequest);
                 }
-            } catch (refreshError) {
-                processQueue(refreshError, null);
 
-                // Limpiar tokens y redirigir al login
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('refreshToken');
-                window.location.href = '/login';
+                originalRequest._retry = true;
+                isRefreshing = true;
 
-                return Promise.reject(refreshError);
-            } finally {
-                isRefreshing = false;
+                try {
+                    const refreshToken = localStorage.getItem('refreshToken');
+                    if (refreshToken) {
+                        const response = await api.post('/auth/refresh', { refreshToken });
+                        const { accessToken } = response.data;
+                        localStorage.setItem('authToken', accessToken);
+                        processQueue(null, accessToken);
+                        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+                        return api(originalRequest);
+                    }
+                } catch (refreshError) {
+                    processQueue(refreshError, null);
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('refreshToken');
+                    window.location.href = '/login';
+                    return Promise.reject(refreshError);
+                } finally {
+                    isRefreshing = false;
+                }
             }
+
+            // Manejo específico de errores por código
+            const errorMessage = handleErrorResponse(status, data);
+
+            // Solo mostrar toast para errores que no sean de validación
+            if (status !== 422 && status !== 400) {
+                toast.error(errorMessage);
+            }
+
+            console.error(`❌ API Error: ${status}`, {
+                url: error.config?.url,
+                method: error.config?.method,
+                data: data,
+                message: errorMessage
+            });
         }
-
-        // Manejo específico de errores por código
-        const errorMessage = handleErrorResponse(status, data);
-
-        // Solo mostrar toast para errores que no sean de validación
-        if (status !== 422 && status !== 400) {
-            toast.error(errorMessage);
-        }
-
-        console.error(`❌ API Error: ${status}`, {
-            url: error.config?.url,
-            method: error.config?.method,
-            data: data,
-            message: errorMessage
-        });
 
         return Promise.reject(error);
     }
 );
+
+// Función para manejar requests con mock service
+const handleMockRequest = async (config) => {
+    try {
+        const { method, url, data } = config;
+        const endpoint = url.replace(API_CONFIG.baseURL, '').replace('/api', '');
+
+        let result;
+
+        // Mapear endpoints a métodos del mock service
+        if (endpoint.includes('/auth/login')) {
+            result = await mockBackendService.login(data);
+        } else if (endpoint.includes('/auth/logout')) {
+            result = await mockBackendService.logout();
+        } else if (endpoint.includes('/auth/refresh')) {
+            result = await mockBackendService.refreshToken();
+        } else if (endpoint.includes('/asignaturas/activas')) {
+            result = await mockBackendService.getAsignaturasActivas();
+        } else if (endpoint.includes('/asignaturas/estadisticas')) {
+            result = await mockBackendService.getAsignaturasEstadisticas();
+        } else if (endpoint.includes('/asignaturas') && method === 'get') {
+            if (endpoint.includes('/asignaturas/')) {
+                const id = endpoint.split('/').pop();
+                result = await mockBackendService.getAsignaturaById(id);
+            } else {
+                result = await mockBackendService.getAsignaturas(config.params);
+            }
+        } else if (endpoint.includes('/asignaturas') && method === 'post') {
+            result = await mockBackendService.createAsignatura(data);
+        } else if (endpoint.includes('/asignaturas') && method === 'put') {
+            const id = endpoint.split('/').pop();
+            result = await mockBackendService.updateAsignatura(id, data);
+        } else if (endpoint.includes('/asignaturas') && method === 'delete') {
+            const id = endpoint.split('/').pop();
+            result = await mockBackendService.deleteAsignatura(id);
+        } else if (endpoint.includes('/horarios/semanal')) {
+            result = await mockBackendService.getWeeklySchedule(config.params);
+        } else if (endpoint.includes('/horarios') && method === 'get') {
+            result = await mockBackendService.getHorarios(config.params);
+        } else if (endpoint.includes('/horarios') && method === 'post') {
+            result = await mockBackendService.createHorario(data);
+        } else if (endpoint.includes('/planes-estudio')) {
+            result = await mockBackendService.getPlanesEstudio();
+        } else if (endpoint.includes('/malla-curricular')) {
+            const planId = endpoint.split('/').pop();
+            result = await mockBackendService.getMallaCurricular(planId);
+        } else if (endpoint.includes('/pensum/estadisticas')) {
+            const planId = endpoint.split('/').pop();
+            result = await mockBackendService.getEstadisticasPensum(planId);
+        } else if (endpoint.includes('/health')) {
+            result = await mockBackendService.checkHealth();
+        } else {
+            throw new Error(`Endpoint no implementado en mock: ${endpoint}`);
+        }
+
+        // Simular respuesta de axios
+        return {
+            data: result,
+            status: 200,
+            statusText: 'OK',
+            headers: {},
+            config
+        };
+    } catch (error) {
+        // Simular error de axios
+        throw {
+            response: {
+                data: { message: error.message },
+                status: 400,
+                statusText: 'Bad Request'
+            },
+            config
+        };
+    }
+};
 
 // Función para manejar respuestas de error
 const handleErrorResponse = (status, data) => {
@@ -174,12 +271,10 @@ const handleErrorResponse = (status, data) => {
         504: 'Tiempo de espera agotado'
     };
 
-    // Usar mensaje del servidor si está disponible
     if (data?.message) {
         return data.message;
     }
 
-    // Usar mensaje por defecto según el código
     return defaultMessages[status] || `Error ${status}`;
 };
 
@@ -200,19 +295,26 @@ export const buildQueryParams = (params) => {
     return searchParams.toString();
 };
 
-// Función para hacer requests con retry automático
+// Función para hacer requests con retry automático y fallback a mock
 const requestWithRetry = async (requestFn, retries = API_CONFIG.retries) => {
     for (let i = 0; i <= retries; i++) {
         try {
             return await requestFn();
         } catch (error) {
+            // Si es el último intento y hay fallback disponible, usar mock
+            if (i === retries && !error.response && API_CONFIG.useMockFallback) {
+                console.warn('⚠️ All retries failed, using mock service');
+                useMockService = true;
+                return await requestFn();
+            }
+
             if (i === retries) {
                 throw error;
             }
 
             // Solo reintentar en errores de red o 5xx
             if (!error.response || error.response.status >= 500) {
-                const delay = API_CONFIG.retryDelay * Math.pow(2, i); // Exponential backoff
+                const delay = API_CONFIG.retryDelay * Math.pow(2, i);
                 await new Promise(resolve => setTimeout(resolve, delay));
                 continue;
             }
@@ -222,13 +324,42 @@ const requestWithRetry = async (requestFn, retries = API_CONFIG.retries) => {
     }
 };
 
-// API helper functions
+// API helper functions con detección automática de mock
 export const apiHelper = {
-    get: (url, config = {}) => requestWithRetry(() => api.get(url, config)),
-    post: (url, data = {}, config = {}) => requestWithRetry(() => api.post(url, data, config)),
-    put: (url, data = {}, config = {}) => requestWithRetry(() => api.put(url, data, config)),
-    patch: (url, data = {}, config = {}) => requestWithRetry(() => api.patch(url, data, config)),
-    delete: (url, config = {}) => requestWithRetry(() => api.delete(url, config)),
+    get: (url, config = {}) => requestWithRetry(async () => {
+        if (useMockService) {
+            return handleMockRequest({ ...config, method: 'get', url });
+        }
+        return api.get(url, config);
+    }),
+
+    post: (url, data = {}, config = {}) => requestWithRetry(async () => {
+        if (useMockService) {
+            return handleMockRequest({ ...config, method: 'post', url, data });
+        }
+        return api.post(url, data, config);
+    }),
+
+    put: (url, data = {}, config = {}) => requestWithRetry(async () => {
+        if (useMockService) {
+            return handleMockRequest({ ...config, method: 'put', url, data });
+        }
+        return api.put(url, data, config);
+    }),
+
+    patch: (url, data = {}, config = {}) => requestWithRetry(async () => {
+        if (useMockService) {
+            return handleMockRequest({ ...config, method: 'patch', url, data });
+        }
+        return api.patch(url, data, config);
+    }),
+
+    delete: (url, config = {}) => requestWithRetry(async () => {
+        if (useMockService) {
+            return handleMockRequest({ ...config, method: 'delete', url });
+        }
+        return api.delete(url, config);
+    }),
 };
 
 // Función adicional para mejor compatibilidad
@@ -248,43 +379,57 @@ export const handleApiError = (error) => {
 // Función para verificar salud del API
 export const checkApiHealth = async () => {
     try {
-        const response = await api.get('/health', { timeout: 5000 });
-        return {
-            isHealthy: response.status === 200,
-            responseTime: response.headers['x-response-time'] || 'unknown'
-        };
+        let response;
+        if (useMockService) {
+            response = await mockBackendService.checkHealth();
+            return { isHealthy: true, responseTime: '200ms', service: 'mock' };
+        } else {
+            response = await api.get('/health', { timeout: 5000 });
+            return {
+                isHealthy: response.status === 200,
+                responseTime: response.headers['x-response-time'] || 'unknown',
+                service: 'backend'
+            };
+        }
     } catch (error) {
         return {
             isHealthy: false,
-            error: error.message
+            error: error.message,
+            service: useMockService ? 'mock' : 'backend'
         };
     }
-};
-
-// Función para configurar interceptors personalizados
-export const addRequestInterceptor = (onFulfilled, onRejected) => {
-    return api.interceptors.request.use(onFulfilled, onRejected);
-};
-
-export const addResponseInterceptor = (onFulfilled, onRejected) => {
-    return api.interceptors.response.use(onFulfilled, onRejected);
 };
 
 // Funciones para manejo de autenticación
 export const authAPI = {
     login: async (credentials) => {
-        const response = await api.post('/auth/login', credentials);
-        const { accessToken, refreshToken, user } = response.data;
+        try {
+            let response;
+            if (useMockService) {
+                const result = await mockBackendService.login(credentials);
+                response = { data: result };
+            } else {
+                response = await api.post('/auth/login', credentials);
+            }
 
-        localStorage.setItem('authToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
+            const { accessToken, refreshToken, user } = response.data;
 
-        return { user, accessToken };
+            localStorage.setItem('authToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+
+            return { user, accessToken };
+        } catch (error) {
+            throw error;
+        }
     },
 
     logout: async () => {
         try {
-            await api.post('/auth/logout');
+            if (useMockService) {
+                await mockBackendService.logout();
+            } else {
+                await api.post('/auth/logout');
+            }
         } finally {
             localStorage.removeItem('authToken');
             localStorage.removeItem('refreshToken');
@@ -297,9 +442,15 @@ export const authAPI = {
             throw new Error('No refresh token available');
         }
 
-        const response = await api.post('/auth/refresh', { refreshToken });
-        const { accessToken } = response.data;
+        let response;
+        if (useMockService) {
+            const result = await mockBackendService.refreshToken();
+            response = { data: result };
+        } else {
+            response = await api.post('/auth/refresh', { refreshToken });
+        }
 
+        const { accessToken } = response.data;
         localStorage.setItem('authToken', accessToken);
         return accessToken;
     }
@@ -309,4 +460,4 @@ export const authAPI = {
 export default api;
 
 // Export de configuración para testing
-export { API_CONFIG };
+export { API_CONFIG, useMockService };
