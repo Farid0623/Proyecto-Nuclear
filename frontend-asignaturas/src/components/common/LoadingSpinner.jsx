@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { clsx } from 'clsx';
 
 const LoadingSpinner = ({
@@ -35,6 +36,21 @@ const LoadingSpinner = ({
             )}
         </div>
     );
+};
+
+// PropTypes
+LoadingSpinner.propTypes = {
+    size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
+    className: PropTypes.string,
+    color: PropTypes.oneOf(['primary', 'white', 'gray']),
+    text: PropTypes.string
+};
+
+LoadingSpinner.defaultProps = {
+    size: 'md',
+    className: '',
+    color: 'primary',
+    text: ''
 };
 
 export default LoadingSpinner;

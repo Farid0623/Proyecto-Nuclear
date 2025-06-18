@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { AlertCircle, CheckCircle, AlertTriangle, Info, X } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -100,6 +101,25 @@ const ValidationAlert = ({
             </div>
         </div>
     );
+};
+
+// Agregar PropTypes faltantes
+ValidationAlert.propTypes = {
+    type: PropTypes.oneOf(['success', 'error', 'warning', 'info']),
+    title: PropTypes.string,
+    message: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+    onClose: PropTypes.func,
+    dismissible: PropTypes.bool,
+    className: PropTypes.string
+};
+
+ValidationAlert.defaultProps = {
+    type: 'info',
+    title: null,
+    message: null,
+    onClose: null,
+    dismissible: false,
+    className: ''
 };
 
 export default ValidationAlert;
