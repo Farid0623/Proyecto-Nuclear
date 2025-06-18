@@ -12,16 +12,17 @@ const Button = React.forwardRef(({
                                      type = 'button',
                                      ...props
                                  }, ref) => {
-    const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+    const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
 
     const variants = {
-        primary: 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500',
-        secondary: 'bg-secondary-100 text-secondary-900 hover:bg-secondary-200 focus:ring-secondary-500',
-        success: 'bg-success-600 text-white hover:bg-success-700 focus:ring-success-500',
-        warning: 'bg-warning-600 text-white hover:bg-warning-700 focus:ring-warning-500',
-        danger: 'bg-danger-600 text-white hover:bg-danger-700 focus:ring-danger-500',
-        ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-500',
-        outline: 'border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:ring-primary-500'
+        primary: 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 shadow-sm hover:shadow-md',
+        secondary: 'bg-secondary-600 text-white hover:bg-secondary-700 focus:ring-secondary-500 shadow-sm hover:shadow-md',
+        success: 'bg-success-600 text-white hover:bg-success-700 focus:ring-success-500 shadow-sm hover:shadow-md',
+        warning: 'bg-warning-600 text-white hover:bg-warning-700 focus:ring-warning-500 shadow-sm hover:shadow-md',
+        danger: 'bg-danger-600 text-white hover:bg-danger-700 focus:ring-danger-500 shadow-sm hover:shadow-md',
+        ghost: 'text-gray-700 hover:bg-primary-50 hover:text-primary-700 focus:ring-primary-500',
+        outline: 'border border-primary-300 text-primary-700 bg-white hover:bg-primary-50 focus:ring-primary-500',
+        'outline-secondary': 'border border-secondary-300 text-secondary-700 bg-white hover:bg-secondary-50 focus:ring-secondary-500'
     };
 
     const sizes = {
@@ -41,6 +42,7 @@ const Button = React.forwardRef(({
                 baseClasses,
                 variants[variant],
                 sizes[size],
+                loading && 'cursor-wait',
                 className
             )}
             {...props}
@@ -76,7 +78,16 @@ const Button = React.forwardRef(({
 Button.propTypes = {
     children: PropTypes.node.isRequired,
     className: PropTypes.string,
-    variant: PropTypes.oneOf(['primary', 'secondary', 'success', 'warning', 'danger', 'ghost', 'outline']),
+    variant: PropTypes.oneOf([
+        'primary',
+        'secondary',
+        'success',
+        'warning',
+        'danger',
+        'ghost',
+        'outline',
+        'outline-secondary'
+    ]),
     size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
     disabled: PropTypes.bool,
     loading: PropTypes.bool,

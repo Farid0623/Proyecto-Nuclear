@@ -1,4 +1,3 @@
-// tailwind.config.js - Configuración basada en el diseño de la Universidad Alexander von Humboldt
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
@@ -8,69 +7,79 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                // Colores principales basados en el diseño universitario
-                university: {
-                    purple: {
-                        50: '#f5f3ff',
-                        100: '#ede9fe',
-                        200: '#ddd6fe',
-                        300: '#c4b5fd',
-                        400: '#a78bfa',
-                        500: '#8b5cf6',
-                        600: '#7c3aed', // Color principal púrpura de la universidad
-                        700: '#6d28d9',
-                        800: '#5b21b6',
-                        900: '#4c1d95',
-                    },
-                    blue: {
-                        50: '#eff6ff',
-                        100: '#dbeafe',
-                        200: '#bfdbfe',
-                        300: '#93c5fd',
-                        400: '#60a5fa',
-                        500: '#3b82f6',
-                        600: '#2563eb', // Azul secundario
-                        700: '#1d4ed8',
-                        800: '#1e40af',
-                        900: '#1e3a8a',
-                    },
-                    gray: {
-                        50: '#f9fafb',
-                        100: '#f3f4f6',
-                        200: '#e5e7eb',
-                        300: '#d1d5db',
-                        400: '#9ca3af',
-                        500: '#6b7280',
-                        600: '#4b5563',
-                        700: '#374151',
-                        800: '#1f2937',
-                        900: '#111827',
-                    }
-                },
-                // Mapeo a colores primarios para compatibilidad
+                // Colores institucionales oficiales
                 primary: {
-                    50: '#f5f3ff',
-                    100: '#ede9fe',
-                    200: '#ddd6fe',
-                    300: '#c4b5fd',
-                    400: '#a78bfa',
-                    500: '#8b5cf6',
-                    600: '#7c3aed',
-                    700: '#6d28d9',
-                    800: '#5b21b6',
-                    900: '#4c1d95',
+                    50:  '#f0f3f8',
+                    100: '#dbe2ee',
+                    200: '#b8c7dd',
+                    300: '#8ba4c9',
+                    400: '#5277a7',
+                    500: '#295489',
+                    600: '#183c66', // Azul institucional principal
+                    700: '#14325a',
+                    800: '#12294c',
+                    900: '#101f39',
                 },
                 secondary: {
-                    50: '#eff6ff',
-                    100: '#dbeafe',
-                    200: '#bfdbfe',
-                    300: '#93c5fd',
-                    400: '#60a5fa',
-                    500: '#3b82f6',
-                    600: '#2563eb',
-                    700: '#1d4ed8',
-                    800: '#1e40af',
-                    900: '#1e3a8a',
+                    50:  '#faecef',
+                    100: '#f6d5db',
+                    200: '#edabb7',
+                    300: '#e1788a',
+                    400: '#d13b4f',
+                    500: '#c8102e', // Rojo institucional principal
+                    600: '#b01029',
+                    700: '#930d22',
+                    800: '#7a0c1b',
+                    900: '#5e0914',
+                },
+                // Colores de soporte
+                success: {
+                    50: '#f0fdf4',
+                    100: '#dcfce7',
+                    200: '#bbf7d0',
+                    300: '#86efac',
+                    400: '#4ade80',
+                    500: '#22c55e',
+                    600: '#16a34a',
+                    700: '#15803d',
+                    800: '#166534',
+                    900: '#14532d',
+                },
+                warning: {
+                    50: '#fffbeb',
+                    100: '#fef3c7',
+                    200: '#fde68a',
+                    300: '#fcd34d',
+                    400: '#fbbf24',
+                    500: '#f59e0b',
+                    600: '#d97706',
+                    700: '#b45309',
+                    800: '#92400e',
+                    900: '#78350f',
+                },
+                danger: {
+                    50: '#fef2f2',
+                    100: '#fee2e2',
+                    200: '#fecaca',
+                    300: '#fca5a5',
+                    400: '#f87171',
+                    500: '#ef4444',
+                    600: '#dc2626',
+                    700: '#b91c1c',
+                    800: '#991b1b',
+                    900: '#7f1d1d',
+                },
+                gray: {
+                    50: '#f9fafb',
+                    100: '#f3f4f6',
+                    200: '#e5e7eb',
+                    300: '#d1d5db',
+                    400: '#9ca3af',
+                    500: '#6b7280',
+                    600: '#4b5563',
+                    700: '#374151',
+                    800: '#1f2937',
+                    900: '#111827',
                 }
             },
             fontFamily: {
@@ -89,7 +98,7 @@ module.exports = {
                 '4xl': '2rem',
             },
             boxShadow: {
-                'university': '0 4px 25px -5px rgba(124, 58, 237, 0.1), 0 10px 40px -7px rgba(124, 58, 237, 0.1)',
+                'institutional': '0 4px 25px -5px rgba(24, 60, 102, 0.1), 0 10px 40px -7px rgba(24, 60, 102, 0.1)',
                 'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
                 'medium': '0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 40px -7px rgba(0, 0, 0, 0.1)',
             },
