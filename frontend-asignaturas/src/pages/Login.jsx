@@ -12,27 +12,19 @@ import toast from 'react-hot-toast';
 const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { user, actions } = useApp();
+    const { user, login } = useApp();
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [redirecting, setRedirecting] = useState(false);
 
     const from = location.state?.from?.pathname || '/';
 
-    // Verificar autenticación y redirigir
+    // Si ya está autenticado, redirigir
     useEffect(() => {
-        console.log('🔍 Login useEffect - Auth status:', user.isAuthenticated);
-        if (user.isAuthenticated && !redirecting) {
-            console.log('👤 User authenticated, preparing redirect to:', from);
-            setRedirecting(true);
-
-            // Usar setTimeout para asegurar que el estado se actualice
-            setTimeout(() => {
-                console.log('🚀 Executing redirect to:', from);
-                navigate(from, { replace: true });
-            }, 100);
+        if (user.isAuthenticated) {
+            console.log('✅ Already authenticated, redirecting to:', from);
+            navigate(from, { replace: true });
         }
-    }, [user.isAuthenticated, navigate, from, redirecting]);
+    }, [user.isAuthenticated, navigate, from]);
 
     const {
         register,
@@ -45,52 +37,45 @@ const Login = () => {
         }
     });
 
-    const doLogin = async (userData) => {
-        console.log('🔐 Executing login with user:', userData);
-
-        // Crear tokens mock
-        const mockToken = 'token-' + Date.now();
-        const mockRefreshToken = 'refresh-' + Date.now();
-
-        // Guardar en localStorage PRIMERO
-        localStorage.setItem('authToken', mockToken);
-        localStorage.setItem('refreshToken', mockRefreshToken);
-        localStorage.setItem('userData', JSON.stringify(userData));
-
-        console.log('💾 Tokens saved:', { mockToken, mockRefreshToken });
-
-        // Actualizar contexto
-        actions.setUser(userData);
-
-        // Toast de éxito
-        toast.success(`¡Bienvenido ${userData.nombre}!`);
-
-        console.log('✅ Login process completed, redirecting...');
-
-        // Forzar redirección después del login
-        setTimeout(() => {
-            window.location.href = '/';
-        }, 1000);
-    };
-
     const onSubmit = async (data) => {
         setIsLoading(true);
         console.log('🚀 Login attempt with:', data.email);
 
         try {
-            // Simular delay de login
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Validar credenciales
+            const validUsers = [
+                { email: 'admin@cue.edu.co', password: 'admin123', nombre: 'Administrador', rol: 'admin' },
+                { email: 'coordinador@cue.edu.co', password: 'coord123', nombre: 'Coordinador', rol: 'coordinador' }
+            ];
 
-            // Datos del usuario mock
+            const validUser = validUsers.find(u => u.email === data.email && u.password === data.password);
+
+            if (!validUser) {
+                toast.error('Credenciales incorrectas');
+                return;
+            }
+
+            // Preparar datos del usuario
             const userData = {
                 id: 1,
-                nombre: 'Administrador Demo',
-                email: data.email,
-                rol: 'administrador'
+                nombre: validUser.nombre,
+                email: validUser.email,
+                rol: validUser.rol
             };
 
-            // Ejecutar login
-            await doLogin(userData);
+            // Intentar login
+            const success = login(userData);
+
+            if (success) {
+                toast.success(`¡Bienvenido ${userData.nombre}!`);
+
+                // Esperar un poco y redirigir
+                setTimeout(() => {
+                    navigate(from, { replace: true });
+                }, 500);
+            } else {
+                toast.error('Error en el login');
+            }
 
         } catch (error) {
             console.error('❌ Login error:', error);
@@ -100,50 +85,31 @@ const Login = () => {
         }
     };
 
-    const handleQuickLogin = async () => {
-        console.log('⚡ Quick login triggered');
-        setIsLoading(true);
-
+    const handleQuickLogin = () => {
         const userData = {
             id: 1,
-            nombre: 'Usuario Rápido',
+            nombre: 'Usuario Demo',
             email: 'admin@cue.edu.co',
-            rol: 'administrador'
+            rol: 'admin'
         };
 
-        await doLogin(userData);
-        setIsLoading(false);
+        const success = login(userData);
+        if (success) {
+            toast.success(`¡Bienvenido ${userData.nombre}!`);
+            navigate(from, { replace: true });
+        }
     };
-
-    // Si está redirigiendo, mostrar loading
-    if (redirecting) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-red-600 flex items-center justify-center p-4">
-                <Card className="p-8 text-center">
-                    <LoadingSpinner size="lg" className="mx-auto mb-4" />
-                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                        Acceso Exitoso
-                    </h2>
-                    <p className="text-gray-600">
-                        Redirigiendo al sistema...
-                    </p>
-                </Card>
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-red-600 flex items-center justify-center p-4">
             <div className="w-full max-w-md">
-                {/* Debug Info - Solo visible en desarrollo */}
+                {/* Debug en desarrollo */}
                 {process.env.NODE_ENV === 'development' && (
-                    <div className="mb-4 p-3 bg-black text-white text-xs rounded">
+                    <div className="mb-4 p-3 bg-black text-white text-xs rounded font-mono">
                         <div>🔧 DEBUG:</div>
-                        <div>Auth: {user.isAuthenticated ? 'YES' : 'NO'}</div>
-                        <div>Token: {localStorage.getItem('authToken') ? 'YES' : 'NO'}</div>
-                        <div>Path: {location.pathname}</div>
-                        <div>Redirect: {from}</div>
-                        <div>Redirecting: {redirecting ? 'YES' : 'NO'}</div>
+                        <div>Auth: {user.isAuthenticated ? '✅' : '❌'}</div>
+                        <div>User: {user.nombre || 'None'}</div>
+                        <div>Token: {localStorage.getItem('authToken') ? '✅' : '❌'}</div>
                     </div>
                 )}
 
@@ -206,7 +172,7 @@ const Login = () => {
 
                         <Button
                             type="submit"
-                            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-lg shadow-lg transform transition hover:scale-105"
+                            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                             loading={isLoading}
                             disabled={isLoading}
                         >
@@ -223,22 +189,22 @@ const Login = () => {
                             )}
                         </Button>
 
-                        {/* Botón de acceso rápido */}
                         <Button
                             type="button"
                             onClick={handleQuickLogin}
                             disabled={isLoading}
-                            className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg transform transition hover:scale-105"
+                            className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
                         >
-                            ⚡ Acceso Rápido (Demo)
+                            ⚡ Acceso Rápido
                         </Button>
                     </form>
 
-                    <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+                    {/* Credenciales */}
+                    <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                         <div className="text-sm text-blue-800">
-                            <strong>Credenciales de Prueba:</strong><br />
-                            📧 Email: admin@cue.edu.co<br />
-                            🔑 Password: admin123
+                            <strong>Credenciales:</strong><br />
+                            📧 admin@cue.edu.co / admin123<br />
+                            📧 coordinador@cue.edu.co / coord123
                         </div>
                     </div>
                 </Card>

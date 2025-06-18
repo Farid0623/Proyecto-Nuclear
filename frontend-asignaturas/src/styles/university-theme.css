@@ -1,27 +1,27 @@
-/* Tema institucional con colores oficiales */
+/* Tema Universidad Alexander von Humboldt */
 :root {
-    --institutional-blue: #183c66;
-    --institutional-blue-light: #295489;
-    --institutional-red: #c8102e;
-    --institutional-red-light: #d13b4f;
-    --institutional-gray: #374151;
-    --institutional-gray-light: #6b7280;
+    --humboldt-blue: #0d1458;
+    --humboldt-blue-light: #2d37e8;
+    --humboldt-red: #c70d0d;
+    --humboldt-red-light: #ed1515;
+    --humboldt-gray: #334155;
+    --humboldt-gray-light: #64748b;
 }
 
 /* Header institucional */
-.institutional-header {
-    background: linear-gradient(135deg, var(--institutional-blue) 0%, var(--institutional-blue-light) 100%);
-    box-shadow: 0 4px 25px -5px rgba(24, 60, 102, 0.15);
+.humboldt-header {
+    background: linear-gradient(135deg, var(--humboldt-blue) 0%, var(--humboldt-blue-light) 100%);
+    box-shadow: 0 4px 25px -5px rgba(13, 20, 88, 0.15);
 }
 
 /* Logo institucional */
-.institutional-logo {
+.humboldt-logo {
     display: flex;
     align-items: center;
     gap: 0.75rem;
 }
 
-.institutional-logo-icon {
+.humboldt-logo-icon {
     width: 2.5rem;
     height: 2.5rem;
     background: white;
@@ -30,83 +30,91 @@
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    color: var(--institutional-blue);
+    color: var(--humboldt-blue);
     font-size: 1.125rem;
-    box-shadow: 0 2px 8px rgba(24, 60, 102, 0.1);
+    box-shadow: 0 2px 8px rgba(13, 20, 88, 0.1);
 }
 
 /* Sidebar institucional */
-.institutional-sidebar {
-    background: linear-gradient(180deg, #ffffff 0%, #f0f3f8 100%);
-    border-right: 1px solid #dbe2ee;
+.humboldt-sidebar {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    border-right: 1px solid #e2e8f0;
 }
 
 /* Botones del tema institucional */
-.btn-institutional-primary {
-    background: linear-gradient(135deg, var(--institutional-blue) 0%, var(--institutional-blue-light) 100%);
+.btn-humboldt-primary {
+    background: linear-gradient(135deg, var(--humboldt-blue) 0%, var(--humboldt-blue-light) 100%);
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     font-weight: 500;
     transition: all 0.2s ease-in-out;
-    box-shadow: 0 2px 15px -3px rgba(24, 60, 102, 0.2);
+    box-shadow: 0 2px 15px -3px rgba(13, 20, 88, 0.2);
 }
 
-.btn-institutional-primary:hover {
+.btn-humboldt-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 25px -5px rgba(24, 60, 102, 0.3);
-    background: linear-gradient(135deg, #14325a 0%, #183c66 100%);
+    box-shadow: 0 4px 25px -5px rgba(13, 20, 88, 0.3);
+    background: linear-gradient(135deg, #0a0f3a 0%, #1f2bb8 100%);
 }
 
-.btn-institutional-secondary {
-    background: linear-gradient(135deg, var(--institutional-red) 0%, var(--institutional-red-light) 100%);
+.btn-humboldt-secondary {
+    background: linear-gradient(135deg, var(--humboldt-red) 0%, var(--humboldt-red-light) 100%);
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     font-weight: 500;
     transition: all 0.2s ease-in-out;
-    box-shadow: 0 2px 15px -3px rgba(200, 16, 46, 0.2);
+    box-shadow: 0 2px 15px -3px rgba(199, 13, 13, 0.2);
 }
 
-.btn-institutional-secondary:hover {
+.btn-humboldt-secondary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 25px -5px rgba(200, 16, 46, 0.3);
-    background: linear-gradient(135deg, #930d22 0%, #c8102e 100%);
+    box-shadow: 0 4px 25px -5px rgba(199, 13, 13, 0.3);
+    background: linear-gradient(135deg, #990a0a 0%, #c70d0d 100%);
 }
 
 /* Cards del tema institucional */
-.institutional-card {
+.humboldt-card {
     background: white;
     border-radius: 0.75rem;
-    border: 1px solid #dbe2ee;
+    border: 1px solid #e2e8f0;
     box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07);
     transition: all 0.2s ease-in-out;
 }
 
-.institutional-card:hover {
-    box-shadow: 0 4px 25px -5px rgba(24, 60, 102, 0.1);
+.humboldt-card:hover {
+    box-shadow: 0 4px 25px -5px rgba(13, 20, 88, 0.1);
     transform: translateY(-2px);
 }
 
 /* Navegación activa */
 .nav-item-active {
-    background: linear-gradient(135deg, rgba(24, 60, 102, 0.1) 0%, rgba(41, 84, 137, 0.1) 100%);
-    border-right: 3px solid var(--institutional-blue);
-    color: var(--institutional-blue);
+    background: linear-gradient(135deg, rgba(13, 20, 88, 0.1) 0%, rgba(45, 55, 232, 0.1) 100%);
+    border-right: 3px solid var(--humboldt-blue);
+    color: var(--humboldt-blue);
 }
 
 /* Login page styles */
-.login-container {
-    background: linear-gradient(135deg, var(--institutional-blue) 0%, var(--institutional-blue-light) 50%, var(--institutional-red) 100%);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.humboldt-login-background {
+    background: linear-gradient(135deg, var(--humboldt-blue) 0%, var(--humboldt-blue-light) 50%, var(--humboldt-red) 100%);
+    position: relative;
 }
 
-.login-card {
+.humboldt-login-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    opacity: 0.3;
+}
+
+.humboldt-login-card {
     background: white;
     border-radius: 1rem;
     padding: 2.5rem;
@@ -118,35 +126,18 @@
     margin: 1rem;
 }
 
-.login-logo {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.login-logo h1 {
-    color: var(--institutional-blue);
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-.login-logo p {
-    color: var(--institutional-gray-light);
-    font-size: 0.875rem;
-}
-
 /* Formularios del tema institucional */
-.institutional-form-input {
-    border: 1px solid #dbe2ee;
+.humboldt-form-input {
+    border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     padding: 0.75rem;
     transition: all 0.2s ease-in-out;
     background: white;
 }
 
-.institutional-form-input:focus {
-    border-color: var(--institutional-blue);
-    box-shadow: 0 0 0 3px rgba(24, 60, 102, 0.1);
+.humboldt-form-input:focus {
+    border-color: var(--humboldt-blue);
+    box-shadow: 0 0 0 3px rgba(13, 20, 88, 0.1);
     outline: none;
 }
 
@@ -157,76 +148,105 @@
 }
 
 .form-input-error {
-    border-color: var(--institutional-red);
-    box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1);
+    border-color: var(--humboldt-red);
+    box-shadow: 0 0 0 3px rgba(199, 13, 13, 0.1);
 }
 
 /* Badges institucionales */
-.badge-institutional {
-    background: linear-gradient(135deg, rgba(24, 60, 102, 0.1) 0%, rgba(41, 84, 137, 0.1) 100%);
-    color: var(--institutional-blue);
-    border: 1px solid rgba(24, 60, 102, 0.2);
+.badge-humboldt {
+    background: linear-gradient(135deg, rgba(13, 20, 88, 0.1) 0%, rgba(45, 55, 232, 0.1) 100%);
+    color: var(--humboldt-blue);
+    border: 1px solid rgba(13, 20, 88, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
 }
 
-.badge-institutional-secondary {
-    background: linear-gradient(135deg, rgba(200, 16, 46, 0.1) 0%, rgba(209, 59, 79, 0.1) 100%);
-    color: var(--institutional-red);
-    border: 1px solid rgba(200, 16, 46, 0.2);
+.badge-humboldt-red {
+    background: linear-gradient(135deg, rgba(199, 13, 13, 0.1) 0%, rgba(237, 21, 21, 0.1) 100%);
+    color: var(--humboldt-red);
+    border: 1px solid rgba(199, 13, 13, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
 }
 
 /* Gradientes de fondo */
-.bg-institutional-gradient {
-    background: linear-gradient(135deg, var(--institutional-blue) 0%, var(--institutional-blue-light) 100%);
+.bg-humboldt-gradient {
+    background: linear-gradient(135deg, var(--humboldt-blue) 0%, var(--humboldt-blue-light) 100%);
 }
 
-.bg-institutional-light-gradient {
-    background: linear-gradient(135deg, rgba(24, 60, 102, 0.05) 0%, rgba(41, 84, 137, 0.05) 100%);
+.bg-humboldt-light-gradient {
+    background: linear-gradient(135deg, rgba(13, 20, 88, 0.05) 0%, rgba(45, 55, 232, 0.05) 100%);
 }
 
-.bg-institutional-secondary-gradient {
-    background: linear-gradient(135deg, var(--institutional-red) 0%, var(--institutional-red-light) 100%);
+.bg-humboldt-red-gradient {
+    background: linear-gradient(135deg, var(--humboldt-red) 0%, var(--humboldt-red-light) 100%);
 }
 
 /* Tablas del tema institucional */
-.institutional-table {
+.humboldt-table {
     border-radius: 0.75rem;
     overflow: hidden;
-    border: 1px solid #dbe2ee;
+    border: 1px solid #e2e8f0;
 }
 
-.institutional-table thead {
-    background: linear-gradient(135deg, #f0f3f8 0%, #dbe2ee 100%);
+.humboldt-table thead {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
-.institutional-table tbody tr:hover {
-    background: rgba(24, 60, 102, 0.02);
+.humboldt-table tbody tr:hover {
+    background: rgba(13, 20, 88, 0.02);
 }
 
 /* Animaciones específicas */
-@keyframes institutionalPulse {
+@keyframes humboldtPulse {
     0%, 100% {
-        box-shadow: 0 0 0 0 rgba(24, 60, 102, 0.4);
+        box-shadow: 0 0 0 0 rgba(13, 20, 88, 0.4);
     }
     50% {
-        box-shadow: 0 0 0 10px rgba(24, 60, 102, 0);
+        box-shadow: 0 0 0 10px rgba(13, 20, 88, 0);
     }
 }
 
-.animate-institutional-pulse {
-    animation: institutionalPulse 2s infinite;
+.animate-humboldt-pulse {
+    animation: humboldtPulse 2s infinite;
 }
 
 /* Loading spinner con colores institucionales */
-.institutional-spinner {
-    border: 2px solid #f0f3f8;
-    border-top: 2px solid var(--institutional-blue);
+.humboldt-spinner {
+    border: 2px solid #f8fafc;
+    border-top: 2px solid var(--humboldt-blue);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
 
+/* Statistics cards */
+.stat-card-primary {
+    background: linear-gradient(135deg, rgba(13, 20, 88, 0.05) 0%, rgba(45, 55, 232, 0.05) 100%);
+    border: 1px solid rgba(13, 20, 88, 0.1);
+}
+
+.stat-card-success {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(22, 163, 74, 0.05) 100%);
+    border: 1px solid rgba(34, 197, 94, 0.1);
+}
+
+.stat-card-warning {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(217, 119, 6, 0.05) 100%);
+    border: 1px solid rgba(245, 158, 11, 0.1);
+}
+
+.stat-card-red {
+    background: linear-gradient(135deg, rgba(199, 13, 13, 0.05) 0%, rgba(237, 21, 21, 0.05) 100%);
+    border: 1px solid rgba(199, 13, 13, 0.1);
+}
+
 /* Responsive adjustments */
 @media (max-width: 640px) {
-    .login-card {
+    .humboldt-login-card {
         padding: 1.5rem;
         margin: 0.5rem;
     }
@@ -234,13 +254,13 @@
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
-    .dark .institutional-card {
-        background: #1f2937;
-        border-color: #374151;
+    .dark .humboldt-card {
+        background: #1e293b;
+        border-color: #334155;
     }
 
-    .dark .institutional-sidebar {
-        background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
-        border-right-color: #374151;
+    .dark .humboldt-sidebar {
+        background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+        border-right-color: #334155;
     }
 }

@@ -7,32 +7,57 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                // Colores institucionales oficiales
+                // Colores institucionales Universidad Alexander von Humboldt
+                humboldt: {
+                    50:  '#f0f4ff',
+                    100: '#e0eaff',
+                    200: '#c7d7ff',
+                    300: '#a4baff',
+                    400: '#8193ff',
+                    500: '#5a6cff',
+                    600: '#3f4bff',
+                    700: '#2d37e8',
+                    800: '#1f2bb8',
+                    900: '#0d1458', // Azul marino principal
+                },
+                // Rojo institucional (secundario)
+                humboldtRed: {
+                    50:  '#fff1f1',
+                    100: '#ffe1e1',
+                    200: '#ffc7c7',
+                    300: '#ffa0a0',
+                    400: '#ff6b6b',
+                    500: '#ff3a3a',
+                    600: '#ed1515',
+                    700: '#c70d0d', // Rojo institucional
+                    800: '#a40f0f',
+                    900: '#881414',
+                },
+                // Colores de soporte mejorados
                 primary: {
-                    50:  '#f0f3f8',
-                    100: '#dbe2ee',
-                    200: '#b8c7dd',
-                    300: '#8ba4c9',
-                    400: '#5277a7',
-                    500: '#295489',
-                    600: '#183c66', // Azul institucional principal
-                    700: '#14325a',
-                    800: '#12294c',
-                    900: '#101f39',
+                    50:  '#f0f4ff',
+                    100: '#e0eaff',
+                    200: '#c7d7ff',
+                    300: '#a4baff',
+                    400: '#8193ff',
+                    500: '#5a6cff',
+                    600: '#3f4bff',
+                    700: '#2d37e8',
+                    800: '#1f2bb8',
+                    900: '#0d1458', // Azul marino Humboldt
                 },
                 secondary: {
-                    50:  '#faecef',
-                    100: '#f6d5db',
-                    200: '#edabb7',
-                    300: '#e1788a',
-                    400: '#d13b4f',
-                    500: '#c8102e', // Rojo institucional principal
-                    600: '#b01029',
-                    700: '#930d22',
-                    800: '#7a0c1b',
-                    900: '#5e0914',
+                    50:  '#fff1f1',
+                    100: '#ffe1e1',
+                    200: '#ffc7c7',
+                    300: '#ffa0a0',
+                    400: '#ff6b6b',
+                    500: '#ff3a3a',
+                    600: '#ed1515',
+                    700: '#c70d0d', // Rojo Humboldt
+                    800: '#a40f0f',
+                    900: '#881414',
                 },
-                // Colores de soporte
                 success: {
                     50: '#f0fdf4',
                     100: '#dcfce7',
@@ -58,28 +83,28 @@ module.exports = {
                     900: '#78350f',
                 },
                 danger: {
-                    50: '#fef2f2',
-                    100: '#fee2e2',
-                    200: '#fecaca',
-                    300: '#fca5a5',
-                    400: '#f87171',
-                    500: '#ef4444',
-                    600: '#dc2626',
-                    700: '#b91c1c',
-                    800: '#991b1b',
-                    900: '#7f1d1d',
+                    50: '#fff1f1',
+                    100: '#ffe1e1',
+                    200: '#ffc7c7',
+                    300: '#ffa0a0',
+                    400: '#ff6b6b',
+                    500: '#ff3a3a',
+                    600: '#ed1515',
+                    700: '#c70d0d',
+                    800: '#a40f0f',
+                    900: '#881414',
                 },
                 gray: {
-                    50: '#f9fafb',
-                    100: '#f3f4f6',
-                    200: '#e5e7eb',
-                    300: '#d1d5db',
-                    400: '#9ca3af',
-                    500: '#6b7280',
-                    600: '#4b5563',
-                    700: '#374151',
-                    800: '#1f2937',
-                    900: '#111827',
+                    50: '#f8fafc',
+                    100: '#f1f5f9',
+                    200: '#e2e8f0',
+                    300: '#cbd5e1',
+                    400: '#94a3b8',
+                    500: '#64748b',
+                    600: '#475569',
+                    700: '#334155',
+                    800: '#1e293b',
+                    900: '#0f172a',
                 }
             },
             fontFamily: {
@@ -98,7 +123,8 @@ module.exports = {
                 '4xl': '2rem',
             },
             boxShadow: {
-                'institutional': '0 4px 25px -5px rgba(24, 60, 102, 0.1), 0 10px 40px -7px rgba(24, 60, 102, 0.1)',
+                'humboldt': '0 4px 25px -5px rgba(13, 20, 88, 0.1), 0 10px 40px -7px rgba(13, 20, 88, 0.1)',
+                'humboldt-red': '0 4px 25px -5px rgba(199, 13, 13, 0.1), 0 10px 40px -7px rgba(199, 13, 13, 0.1)',
                 'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
                 'medium': '0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 40px -7px rgba(0, 0, 0, 0.1)',
             },
