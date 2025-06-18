@@ -1,4 +1,3 @@
-// src/components/pensum/PensumView.jsx - Vista completa y limpia del pensum
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DndProvider } from 'react-dnd';

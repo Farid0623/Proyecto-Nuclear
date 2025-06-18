@@ -1,5 +1,4 @@
-// src/services/pensumService.js - Servicio completo para gestión de pensum
-import { apiHelper, buildQueryParams } from '../config/api';
+import { apiHelper, buildQueryParams, handleApiResponse, handleApiError } from './api';
 
 const ENDPOINTS = {
     PENSUM: '/pensum',

@@ -78,19 +78,14 @@ const Sidebar = ({ isOpen, onClose }) => {
         <>
             {/* Mobile overlay */}
             {isOpen && (
-                <div
+                <button
+                    type="button"
                     className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
                     onClick={handleClose}
-                    role="button"
-                    tabIndex={0}
                     aria-label="Cerrar menú de navegación"
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            handleClose();
-                        }
-                    }}
-                />
+                >
+                    <span className="sr-only">Cerrar menú de navegación</span>
+                </button>
             )}
 
             {/* Sidebar */}
