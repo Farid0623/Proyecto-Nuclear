@@ -4,7 +4,6 @@ import cue.edu.co.moduloasignaturas.model.PlanEstudios;
 import cue.edu.co.moduloasignaturas.model.Semestre;
 import cue.edu.co.moduloasignaturas.model.Asignatura;
 import cue.edu.co.moduloasignaturas.service.PlanEstudiosService;
-import cue.edu.co.moduloasignaturas.service.ServicioValidacion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +26,6 @@ public class PlanEstudiosController {
     @Autowired
     private PlanEstudiosService planEstudiosService;
 
-    @Autowired
-    private ServicioValidacion servicioValidacion;
 
     /**
      * Obtiene todos los planes de estudios
