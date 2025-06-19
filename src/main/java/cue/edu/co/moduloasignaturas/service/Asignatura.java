@@ -1,4 +1,4 @@
-package cue.edu.co.moduloasignaturas.model;
+package cue.edu.co.moduloasignaturas.service;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,8 +14,6 @@ public class Asignatura {
     private Integer horasPracticas;
     private Integer semestre;
     private Boolean activa;
-
-    public Asignatura() {}
 
     public Asignatura(String id, String nombre, String codigo, Integer creditos, Integer horasTeoricas, Integer horasPracticas, Integer semestre, Boolean activa) {
         this.id = id;
